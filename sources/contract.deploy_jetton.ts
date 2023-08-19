@@ -6,7 +6,7 @@ import { Token, storeUploadContent } from "./output/sample_Token";
 import { JettonDefaultWallet } from "./output/sample_JettonDefaultWallet";
 
 import { buildOnchainMetadata } from "./build_data";
-import metadata from "./data.json";
+import metadata from "./jetton_data.json";
 import { NftCollection } from "./output/sample_NftCollection";
 // ================================================================= //
 
@@ -26,16 +26,18 @@ let newContent = beginCell().storeInt(OFFCHAIN_CONTENT_PREFIX, 8).storeStringRef
         )
         .endCell();
 
-    // Parameters
-    let owner = Address.parse("EQD1ptyvitBi3JbHaDQt_6j-15ABn9BqdABTFA1vgzs3Ae6z");
+    // Parameters: Collection Address
+    let owner = Address.parse("kQAgzVlCkPrK9r8F3J1Dgxf8OGwY46yTynBWrU_s4WaJRPtQ");
     let collection_init = await NftCollection.init(owner, newContent, {
         $$type: "RoyaltyParams",
         numerator: 350n, // 350n = 35%
         denominator: 1000n,
         destination: owner,
     });
-
     let collection_address = contractAddress(0, collection_init);
+    // let collection_address = Address.parse("Collection Address");
+
+    // ================================================================= //
     let init = await Token.init(owner, collection_address);
     let address = contractAddress(0, init);
     let deployAmount = toNano("0.1");

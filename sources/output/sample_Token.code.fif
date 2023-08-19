@@ -38,24 +38,27 @@ PROGRAM{
   DECLPROC $global_contractAddress
   DECLPROC $global_send
   DECLPROC $SendParameters$_constructor_to_value_bounce_mode_body_code_data
-  DECLPROC $TokenTransferInternal$_constructor_queryId_amount_from_responseAddress_forward_ton_amount_forward_payload
+  DECLPROC $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload
   DECLPROC $JettonDefaultWallet$_init_child
   DECLPROC $Token$_fun_getJettonWalletInit
-  DECLPROC $Token$_fun_mint
+  DECLPROC $Token$_fun_mint_jetton
+  DECLPROC $Token$_fun_msgValue
   DECLPROC $SendParameters$_constructor_to_mode_value_bounce_body
   DECLPROC $TokenExcesses$_constructor_queryId
-  DECLPROC $Defractionalize$_constructor_sender
+  DECLPROC $Token$_fun_get_wallet_address
+  DECLPROC $Token$_fun_burn
+  DECLPROC $MasterData$_constructor_total_supply_mintable_admin_address_jetton_content_jetton_wallet_code
+  DECLPROC $Token$_fun_get_jetton_data
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
   DECLPROC $Token$_fun_forward
-  DECLPROC $Token$_fun_burn
-  DECLPROC $Token$_fun_getWalletAddress
-  DECLPROC $MasterData$_constructor_total_supply_mintable_admin_jetton_content_jetton_wallet_code
-  DECLPROC $Token$_fun_get_jetton_data
+  DECLPROC $SendParameters$_constructor_to_value_mode_bounce_body
+  DECLPROC $Defractionalize$_constructor_sender
   DECLPROC $Token$_internal_binary_UploadContent
   DECLPROC $Token$_internal_binary_TokenMinting
   DECLPROC $Token$_internal_binary_TokenBurnNotification
-  96826 DECLMETHOD %getWalletAddress
+  115218 DECLMETHOD %msgValue
   109053 DECLMETHOD %getJettonWalletInit
+  103289 DECLMETHOD %get_wallet_address
   106029 DECLMETHOD %get_jetton_data
   113617 DECLMETHOD supported_interfaces
   121275 DECLMETHOD get_abi_ipfs
@@ -323,10 +326,11 @@ PROGRAM{
   }>
   $Token$_contract_init PROCREF:<{
     PUSHNULL
+    1000000000000 PUSHINT
     0 PUSHINT
+    s0 s4 XCHG
     TRUE
-    3 2 BLKSWAP
-    100000000000 PUSHINT
+    s4 s3 s4 XCHG3
   }>
   $Token$_contract_load PROCREF:<{
     c4 PUSH
@@ -486,7 +490,7 @@ PROGRAM{
     s4 s6 XCHG
     s4 s5 XCHG
   }>
-  $TokenTransferInternal$_constructor_queryId_amount_from_responseAddress_forward_ton_amount_forward_payload PROCINLINE:<{
+  $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload PROCINLINE:<{
   }>
   $JettonDefaultWallet$_init_child PROCREF:<{
     s0 s2 XCHG
@@ -521,10 +525,12 @@ PROGRAM{
     ROT
     $JettonDefaultWallet$_init_child INLINECALLDICT
   }>
-  $Token$_fun_mint PROCREF:<{
-    s8 s1 XCPU
+  $Token$_fun_mint_jetton PROCREF:<{
+    DROP
+    s7 s7 XCPU
     ADD
-    6 2 BLKSWAP
+    5 2 BLKSWAP
+    s6 PUSH
     $Token$_fun_getJettonWalletInit INLINECALLDICT
     2DUP
     $global_contractAddress INLINECALLDICT
@@ -536,19 +542,30 @@ PROGRAM{
     OVER
     $global_emptySlice INLINECALLDICT
     s3 s5 XCHG
-    s4 16 s() XCHG
+    s4 17 s() XCHG
     s2 s3 XCHG
-    s2 17 s() XCHG
-    $TokenTransferInternal$_constructor_queryId_amount_from_responseAddress_forward_ton_amount_forward_payload INLINECALLDICT
+    s2 16 s() XCHG
+    $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload INLINECALLDICT
     $TokenTransferInternal$_store_cell INLINECALLDICT
     s6 s5 s0 XCHG3
-    s4 s12 XCHG
-    s3 s11 XCHG
-    s0 s12 s11 XCHG3
+    s4 s11 XCHG
+    s3 s12 XCHG
+    s0 s11 s12 XCHG3
     $SendParameters$_constructor_to_value_bounce_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
-    s3 s5 XCHG
-    2 3 BLKSWAP
+    2 4 BLKSWAP
+  }>
+  $Token$_fun_msgValue PROCREF:<{
+    __tact_my_balance INLINECALLDICT
+    OVER
+    SUB
+    50000000 PUSHINT
+    TUCK
+    MIN
+    SUB
+    50000000 PUSHINT
+    ADD
+    SUB
   }>
   $SendParameters$_constructor_to_mode_value_bounce_body PROCINLINE:<{
     s1 s4 XCHG
@@ -558,7 +575,52 @@ PROGRAM{
   }>
   $TokenExcesses$_constructor_queryId PROCINLINE:<{
   }>
-  $Defractionalize$_constructor_sender PROCINLINE:<{
+  $Token$_fun_get_wallet_address PROCREF:<{
+    $Token$_fun_getJettonWalletInit INLINECALLDICT
+    $global_contractAddress INLINECALLDICT
+  }>
+  $Token$_fun_burn PROCREF:<{
+    s8 s2 XCHG2
+    SUB
+    6 -ROLL
+    $Token$_fun_get_wallet_address INLINECALLDICT
+    1 PUSHINT
+    100 PUSHINT
+    FALSE
+    s0 s10 XCHG
+    $TokenExcesses$_constructor_queryId INLINECALLDICT
+    $TokenExcesses$_store_cell INLINECALLDICT
+    s3 s4 XCHG
+    s1 s3 s0 XCHG3
+    s1 s10 XCHG
+    $SendParameters$_constructor_to_mode_value_bounce_body INLINECALLDICT
+    $global_send INLINECALLDICT
+    5 ROLL
+  }>
+  $MasterData$_constructor_total_supply_mintable_admin_address_jetton_content_jetton_wallet_code PROCINLINE:<{
+  }>
+  $Token$_fun_get_jetton_data PROCREF:<{
+    s5 s4 s3 PUSH3
+    s5 s4 s3 PUSH3
+    s11 s10 s9 PUSH3
+    s10 PUSH
+    s5 s15 XCHG
+    s13 PUSH
+    s5 s15 XCHG
+    s0 s4 XCHG
+    s3 s13 XCHG
+    s12 s11 s14 XCHG3
+    $Token$_fun_getJettonWalletInit INLINECALLDICT
+    6 2 BLKDROP2
+    $StateInit$_get_code INLINECALLDICT
+    s4 s8 XCHG
+    s3 s7 XCHG
+    s6 s5 s0 XCHG3
+    $MasterData$_constructor_total_supply_mintable_admin_address_jetton_content_jetton_wallet_code INLINECALLDICT
+    s8 s10 XCHG
+    s7 s9 XCHG
+    s6 s8 XCHG
+    s5 s7 XCHG
   }>
   $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
@@ -584,63 +646,13 @@ PROGRAM{
     $SendParameters$_constructor_bounce_to_value_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
-  $Token$_fun_burn PROCREF:<{
-    NIP
-    s8 s2 XCHG2
-    SUB
-    6 -ROLL
-    s0 s7 XCHG
-    $Token$_fun_getJettonWalletInit INLINECALLDICT
-    $global_contractAddress INLINECALLDICT
-    3 PUSHINT
-    100 PUSHINT
-    FALSE
-    0 PUSHINT
-    $TokenExcesses$_constructor_queryId INLINECALLDICT
-    $TokenExcesses$_store_cell INLINECALLDICT
-    $SendParameters$_constructor_to_mode_value_bounce_body INLINECALLDICT
-    $global_send INLINECALLDICT
-    s0 s6 XCHG
-    $Defractionalize$_constructor_sender INLINECALLDICT
-    $Defractionalize$_store_cell INLINECALLDICT
-    s2 PUSH
-    s6 s7 XCHG
-    s5 s6 XCHG
-    s0 s4 XCHG
-    s5 s1 s5 XCHG3
-    s3 s3 XCHG2
-    FALSE
+  $SendParameters$_constructor_to_value_mode_bounce_body PROCINLINE:<{
+    s1 s4 XCHG
+    s3 s3 s0 XCHG3
     PUSHNULL
-    $Token$_fun_forward INLINECALLDICT
+    PUSHNULL
   }>
-  $Token$_fun_getWalletAddress PROCREF:<{
-    $Token$_fun_getJettonWalletInit INLINECALLDICT
-    $global_contractAddress INLINECALLDICT
-  }>
-  $MasterData$_constructor_total_supply_mintable_admin_jetton_content_jetton_wallet_code PROCINLINE:<{
-  }>
-  $Token$_fun_get_jetton_data PROCREF:<{
-    s5 s4 s3 PUSH3
-    s5 s4 s3 PUSH3
-    s11 s10 s9 PUSH3
-    s10 PUSH
-    s5 s15 XCHG
-    s13 PUSH
-    s5 s15 XCHG
-    s0 s4 XCHG
-    s3 s13 XCHG
-    s12 s11 s14 XCHG3
-    $Token$_fun_getJettonWalletInit INLINECALLDICT
-    6 2 BLKDROP2
-    $StateInit$_get_code INLINECALLDICT
-    s4 s8 XCHG
-    s3 s7 XCHG
-    s6 s5 s0 XCHG3
-    $MasterData$_constructor_total_supply_mintable_admin_jetton_content_jetton_wallet_code INLINECALLDICT
-    s8 s10 XCHG
-    s7 s9 XCHG
-    s6 s8 XCHG
-    s5 s7 XCHG
+  $Defractionalize$_constructor_sender PROCINLINE:<{
   }>
   $Token$_internal_binary_UploadContent PROCINLINE:<{
     s2 POP
@@ -669,18 +681,19 @@ PROGRAM{
     __tact_slice_eq_bits INLINECALLDICT
     THROWANYIFNOT
     s1 s4 PUSH2
-    $Token$_fun_mint INLINECALLDICT
+    $Token$_fun_mint_jetton INLINECALLDICT
   }>
   $Token$_internal_binary_TokenBurnNotification PROCINLINE:<{
+    DROP
     __tact_context_get INLINECALLDICT
-    s2 s3 XCHG
-    3 BLKDROP
+    DROP
+    s2 POP
     s4 s10 XCHG
     s3 s9 XCHG
     s8 s7 s6 XCHG3
     53832 PUSHINT
     s6 s9 XCPU
-    $Token$_fun_getWalletAddress INLINECALLDICT
+    $Token$_fun_get_wallet_address INLINECALLDICT
     s0 s8 XCHG2
     __tact_slice_eq_bits INLINECALLDICT
     s1 s6 XCHG
@@ -694,19 +707,31 @@ PROGRAM{
     SUB
     -1 GTINT
     THROWANYIFNOT
-    s0 s6 XCHG
-    __tact_not_null INLINECALLDICT
-    s3 s9 XCHG
-    s8 s7 s0 XCHG3
-    s4 s5 XCHG
-    s0 s3 s3 XCHG3
+    DUP
+    s4 s6 XCHG
+    s3 s5 XCHG
+    s4 s3 s7 XCHG3
+    s1 s2 XCHG
+    $Token$_fun_msgValue INLINECALLDICT
+    2 PUSHINT
+    FALSE
+    s10 PUSH
+    $Defractionalize$_constructor_sender INLINECALLDICT
+    $Defractionalize$_store_cell INLINECALLDICT
+    s4 s10 XCHG
+    $SendParameters$_constructor_to_value_mode_bounce_body INLINECALLDICT
+    $global_send INLINECALLDICT
+    s4 s8 XCHG
+    s3 s7 XCHG
+    s6 s4 s4 XCHG3
+    s0 s5 XCHG
+    s3 s1 s3 XCHG3
     $Token$_fun_burn INLINECALLDICT
   }>
-  %getWalletAddress PROC:<{
-    __tact_verify_address INLINECALLDICT
+  %msgValue PROC:<{
     $Token$_contract_load INLINECALLDICT
     6 ROLL
-    $Token$_fun_getWalletAddress INLINECALLDICT
+    $Token$_fun_msgValue INLINECALLDICT
     6 1 BLKDROP2
   }>
   %getJettonWalletInit PROC:<{
@@ -716,6 +741,13 @@ PROGRAM{
     $Token$_fun_getJettonWalletInit INLINECALLDICT
     6 2 BLKDROP2
     $StateInit$_to_external INLINECALLDICT
+  }>
+  %get_wallet_address PROC:<{
+    __tact_verify_address INLINECALLDICT
+    $Token$_contract_load INLINECALLDICT
+    6 ROLL
+    $Token$_fun_get_wallet_address INLINECALLDICT
+    6 1 BLKDROP2
   }>
   %get_jetton_data PROC:<{
     $Token$_contract_load INLINECALLDICT
@@ -730,7 +762,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d6466694d4c48795039335947674a69724e3148436752436a6878645564447754336b7859596f74417a327343} PUSHSLICE
+    x{697066733a2f2f516d505067785a59543178786445596164513934616a636d32566d59766d717a4339667042647047523138365165} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

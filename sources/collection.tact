@@ -1,15 +1,6 @@
 import "./jettonToken";
-const minTonsForStorage: Int = ton("0.01");
-const gasConsumption: Int = ton("0.01");
-
-// contract Factory {
-//     collection_address: Address; 
-
-//     init(collection_address: Address) {
-//         self.collection_address = collection_address;
-//     }
-// }
-
+const minTonsForStorage: Int = ton("0.05");
+const gasConsumption: Int = ton("0.05");
 
 message Fractionalize {
     item_index: Int as uint32;
@@ -18,6 +9,17 @@ message Fractionalize {
 
 message Defractionalize {
     sender: Address;
+}
+
+message(0x693d3950) GetRoyaltyParams {
+    query_id: Int as uint64;
+}
+
+message(0xa8cb00ad) ReportRoyaltyParams {
+    query_id: Int as uint64;
+    numerator:  Int as uint16;
+    denominator: Int as uint16;
+    destination: Address;
 }
 
 contract NftCollection {
@@ -95,9 +97,12 @@ contract NftCollection {
     receive(msg: Defractionalize) {
         let ctx: Context = context();
         require(ctx.sender == self.getTokenAddress(), "not from Jetton Token");
+
+        // Clean up the record
         let redeem_nft_id: Int = self.fractionalized_nft.get(self.redeem_index)!!;
-        self.fractionalized_nft.set(self.redeem_index, null);
+        self.fractionalized_nft.set(self.redeem_index, null); // TODO: Gas consumption will increase or not? 
         self.redeem_index = self.redeem_index + 1;
+
         self.forward(
             self.get_nft_address_by_index(redeem_nft_id)!!,
             RedeemNftItem { new_owner: msg.sender }.toCell(),
@@ -167,17 +172,6 @@ contract NftCollection {
 
 }
 
-message(0x693d3950) GetRoyaltyParams {
-    query_id: Int as uint64;
-}
-
-message(0xa8cb00ad) ReportRoyaltyParams {
-    query_id: Int as uint64;
-    numerator:  Int as uint16;
-    denominator: Int as uint16;
-    destination: Address;
-}
-
 struct CollectionData {
     next_item_index: Int;
     collection_content: Cell;
@@ -202,6 +196,7 @@ contract NftItem {
     individual_content: Cell;
     is_initialized: Bool;
     locked: Bool;
+    
     init(collection_address: Address, item_index: Int, owner: Address, individual_content: Cell){
         self.collection_address = collection_address;
         self.item_index = item_index;

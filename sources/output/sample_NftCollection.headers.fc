@@ -198,14 +198,14 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 ;; $NftCollection$_fun_forward
 ((int, slice, (int, int, slice), cell, cell, int, int), ()) $NftCollection$_fun_forward((int, slice, (int, int, slice), cell, cell, int, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
-;; $SendParameters$_constructor_to_value_mode_bounce_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline;
-
-;; $ReportRoyaltyParams$_constructor_query_id_numerator_denominator_destination
-((int, int, int, slice)) $ReportRoyaltyParams$_constructor_query_id_numerator_denominator_destination(int query_id, int numerator, int denominator, slice destination) inline;
-
 ;; $TokenMinting$_constructor_collection_address_original_applicant
 ((slice, slice)) $TokenMinting$_constructor_collection_address_original_applicant(slice collection_address, slice original_applicant) inline;
 
 ;; $RedeemNftItem$_constructor_new_owner
 ((slice)) $RedeemNftItem$_constructor_new_owner(slice new_owner) inline;
+
+;; $SendParameters$_constructor_to_value_mode_bounce_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline;
+
+;; $ReportRoyaltyParams$_constructor_query_id_numerator_denominator_destination
+((int, int, int, slice)) $ReportRoyaltyParams$_constructor_query_id_numerator_denominator_destination(int query_id, int numerator, int denominator, slice destination) inline;

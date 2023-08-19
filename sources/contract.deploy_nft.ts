@@ -15,7 +15,7 @@ let newContent = beginCell().storeInt(OFFCHAIN_CONTENT_PREFIX, 8).storeStringRef
     // Parameters
     let testnet = true;
     let packageName = "sample_NftCollection.pkg";
-    let owner = Address.parse("EQD1ptyvitBi3JbHaDQt_6j-15ABn9BqdABTFA1vgzs3Ae6z");
+    let owner = Address.parse("kQAgzVlCkPrK9r8F3J1Dgxf8OGwY46yTynBWrU_s4WaJRPtQ");
     let init = await NftCollection.init(owner, newContent, {
         $$type: "RoyaltyParams",
         numerator: 350n, // 350n = 35%

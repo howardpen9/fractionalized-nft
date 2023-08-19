@@ -120,8 +120,8 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 ;; $SendParameters$_constructor_to_value_bounce_mode_body_code_data
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_bounce_mode_body_code_data(slice to, int value, int bounce, int mode, cell body, cell code, cell data) inline;
 
-;; $TokenTransferInternal$_constructor_queryId_amount_from_responseAddress_forward_ton_amount_forward_payload
-((int, int, slice, slice, int, slice)) $TokenTransferInternal$_constructor_queryId_amount_from_responseAddress_forward_ton_amount_forward_payload(int queryId, int amount, slice from, slice responseAddress, int forward_ton_amount, slice forward_payload) inline;
+;; $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload
+((int, int, slice, slice, int, slice)) $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload(int queryId, int amount, slice from, slice response_destination, int forward_ton_amount, slice forward_payload) inline;
 
 ;; $JettonDefaultWallet$_init_child
 (cell, cell) $JettonDefaultWallet$_init_child(cell sys', slice $master, slice $owner) inline_ref;
@@ -129,8 +129,11 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 ;; $Token$_fun_getJettonWalletInit
 ((int, int, slice, slice, cell, int), (cell, cell)) $Token$_fun_getJettonWalletInit((int, int, slice, slice, cell, int) $self, slice $address) impure inline_ref;
 
-;; $Token$_fun_mint
-((int, int, slice, slice, cell, int), ()) $Token$_fun_mint((int, int, slice, slice, cell, int) $self, slice $to, int $amount, slice $responseAddress) impure inline_ref;
+;; $Token$_fun_mint_jetton
+((int, int, slice, slice, cell, int), ()) $Token$_fun_mint_jetton((int, int, slice, slice, cell, int) $self, slice $to, int $amount, slice $responseAddress) impure inline_ref;
+
+;; $Token$_fun_msgValue
+((int, int, slice, slice, cell, int), int) $Token$_fun_msgValue((int, int, slice, slice, cell, int) $self, int $value) impure inline_ref;
 
 ;; $SendParameters$_constructor_to_mode_value_bounce_body
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_mode_value_bounce_body(slice to, int mode, int value, int bounce, cell body) inline;
@@ -138,8 +141,17 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 ;; $TokenExcesses$_constructor_queryId
 ((int)) $TokenExcesses$_constructor_queryId(int queryId) inline;
 
-;; $Defractionalize$_constructor_sender
-((slice)) $Defractionalize$_constructor_sender(slice sender) inline;
+;; $Token$_fun_get_wallet_address
+((int, int, slice, slice, cell, int), slice) $Token$_fun_get_wallet_address((int, int, slice, slice, cell, int) $self, slice $owner) impure inline_ref;
+
+;; $Token$_fun_burn
+((int, int, slice, slice, cell, int), ()) $Token$_fun_burn((int, int, slice, slice, cell, int) $self, int $burnAmount, int $queryId, slice $previous_ownerAddress) impure inline_ref;
+
+;; $MasterData$_constructor_total_supply_mintable_admin_address_jetton_content_jetton_wallet_code
+((int, int, slice, cell, cell)) $MasterData$_constructor_total_supply_mintable_admin_address_jetton_content_jetton_wallet_code(int total_supply, int mintable, slice admin_address, cell jetton_content, cell jetton_wallet_code) inline;
+
+;; $Token$_fun_get_jetton_data
+((int, int, slice, slice, cell, int), (int, int, slice, cell, cell)) $Token$_fun_get_jetton_data((int, int, slice, slice, cell, int) $self) impure inline_ref;
 
 ;; $SendParameters$_constructor_bounce_to_value_mode_body_code_data
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_bounce_to_value_mode_body_code_data(int bounce, slice to, int value, int mode, cell body, cell code, cell data) inline;
@@ -147,14 +159,8 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 ;; $Token$_fun_forward
 ((int, int, slice, slice, cell, int), ()) $Token$_fun_forward((int, int, slice, slice, cell, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
-;; $Token$_fun_burn
-((int, int, slice, slice, cell, int), ()) $Token$_fun_burn((int, int, slice, slice, cell, int) $self, int $burnAmount, slice $responseAddress, int $queryId, slice $ownerAddress) impure inline_ref;
+;; $SendParameters$_constructor_to_value_mode_bounce_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline;
 
-;; $Token$_fun_getWalletAddress
-((int, int, slice, slice, cell, int), slice) $Token$_fun_getWalletAddress((int, int, slice, slice, cell, int) $self, slice $owner) impure inline_ref;
-
-;; $MasterData$_constructor_total_supply_mintable_admin_jetton_content_jetton_wallet_code
-((int, int, slice, cell, cell)) $MasterData$_constructor_total_supply_mintable_admin_jetton_content_jetton_wallet_code(int total_supply, int mintable, slice admin, cell jetton_content, cell jetton_wallet_code) inline;
-
-;; $Token$_fun_get_jetton_data
-((int, int, slice, slice, cell, int), (int, int, slice, cell, cell)) $Token$_fun_get_jetton_data((int, int, slice, slice, cell, int) $self) impure inline_ref;
+;; $Defractionalize$_constructor_sender
+((slice)) $Defractionalize$_constructor_sender(slice sender) inline;

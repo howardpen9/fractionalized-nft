@@ -3,13 +3,17 @@
   "scripts": {
     "build": "tact --config ./tact.config.json",
     "test": "jest",
-    "deploy": "ts-node ./sources/contract.deploy.ts"
+    "deploy_0": "ts-node ./sources/contract.deploy_nft.ts",
+    "deploy_1": "ts-node ./sources/contract.deploy_jetton.ts"
   },
   "dependencies": {
     "@tact-lang/compiler": "^1.1.1",
     "@tact-lang/coverage": "^0.0.7",
     "@tact-lang/deployer": "^0.2.0",
     "@tact-lang/emulator": "^4.1.0",
+    "@ton-community/sandbox": "^0.11.0",
+    "@ton-community/test-utils": "^0.3.0",
+
     "@types/jest": "^29.2.4",
     "@types/node": "^18.11.14",
     "@types/qs": "^6.9.7",

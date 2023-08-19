@@ -1,29 +1,15 @@
 import "./jettonToken";
+const minTonsForStorage: Int = ton("0.01");
+const gasConsumption: Int = ton("0.01");
 
-const minTonsForStorage: Int = ton("0.03");
-const gasConsumption: Int = ton("0.03");
+// contract Factory {
+//     collection_address: Address; 
 
+//     init(collection_address: Address) {
+//         self.collection_address = collection_address;
+//     }
+// }
 
-contract Factory {
-    collection_address: Address; 
-    
-    init() {
-        
-    }
-
-
-}
-
-message(0x693d3950) GetRoyaltyParams {
-    query_id: Int as uint64;
-}
-
-message(0xa8cb00ad) ReportRoyaltyParams {
-    query_id: Int as uint64;
-    numerator:  Int as uint16;
-    denominator: Int as uint16;
-    destination: Address;
-}
 
 message Fractionalize {
     item_index: Int as uint32;
@@ -52,11 +38,13 @@ contract NftCollection {
 
     receive("Mint"){
         let ctx: Context = context(); // get sender Info
-        let msgValue: Int = ctx.value;
+        self.mint(ctx.sender, self.restTransactionValue(ctx.value));
+    }
+
+    fun restTransactionValue(msgValue: Int): Int {
         let tonBalanceBeforeMsg: Int = myBalance() - msgValue;
         let storageFee: Int = minTonsForStorage - min(tonBalanceBeforeMsg, minTonsForStorage);
-        msgValue = msgValue - (storageFee + gasConsumption);
-        self.mint(ctx.sender, msgValue);
+        return msgValue - (storageFee + gasConsumption);
     }
 
     // ===== Private Methods ===== //
@@ -81,23 +69,6 @@ contract NftCollection {
             });
         self.next_item_index = self.next_item_index + 1;
     }
-
-    receive(msg: GetRoyaltyParams) {   
-        let ctx: Context = context(); // get sender Info
-        send(SendParameters{
-            to: ctx.sender,
-            value: 0,
-            mode: 64, 
-            bounce: false,
-            body: ReportRoyaltyParams {
-                query_id: msg.query_id,
-                numerator:  self.royalty_params.numerator,
-                denominator: self.royalty_params.denominator,
-                destination: self.admin
-            }.toCell()
-        });        
-    }
-
     // ===== Fractionalized ===== //
     receive(msg: Fractionalize) {
         let ctx: Context = context();
@@ -120,16 +91,12 @@ contract NftCollection {
         );
     }
 
-    receive(){}
-    receive(str: String) {}
-    receive(slice: Slice) {}
-    // receive(bounced: bounced){}
-
     // Someone's Jetton Wallet will have Jetton Token and want to redeem it.
     receive(msg: Defractionalize) {
         let ctx: Context = context();
         require(ctx.sender == self.getTokenAddress(), "not from Jetton Token");
         let redeem_nft_id: Int = self.fractionalized_nft.get(self.redeem_index)!!;
+        self.fractionalized_nft.set(self.redeem_index, null);
         self.redeem_index = self.redeem_index + 1;
         self.forward(
             self.get_nft_address_by_index(redeem_nft_id)!!,
@@ -137,6 +104,27 @@ contract NftCollection {
             false,
             null
         );
+    }
+
+    receive(){}
+    receive(str: String) {}
+    receive(slice: Slice) {}
+    // receive(bounced: bounced){}
+    
+    receive(msg: GetRoyaltyParams) {   
+        let ctx: Context = context(); // get sender Info
+        send(SendParameters{
+            to: ctx.sender,
+            value: 0,
+            mode: 64, 
+            bounce: false,
+            body: ReportRoyaltyParams {
+                query_id: msg.query_id,
+                numerator:  self.royalty_params.numerator,
+                denominator: self.royalty_params.denominator,
+                destination: self.admin
+            }.toCell()
+        });        
     }
     
     get fun getTokenAddress(): Address {
@@ -176,6 +164,18 @@ contract NftCollection {
     get fun royalty_params(): RoyaltyParams {
         return self.royalty_params;
     }
+
+}
+
+message(0x693d3950) GetRoyaltyParams {
+    query_id: Int as uint64;
+}
+
+message(0xa8cb00ad) ReportRoyaltyParams {
+    query_id: Int as uint64;
+    numerator:  Int as uint16;
+    denominator: Int as uint16;
+    destination: Address;
 }
 
 struct CollectionData {
@@ -273,7 +273,6 @@ contract NftItem {
         });
     }
 
-
     receive("f") {
         let ctx: Context = context();
         require(ctx.sender == self.owner, "not owner");
@@ -301,7 +300,7 @@ contract NftItem {
             value: 0,
             mode: SendIgnoreErrors + SendRemainingValue,
             bounce: false,
-            body: "Success".asComment()
+            body: "Congrats".asComment()
         });
     }
 

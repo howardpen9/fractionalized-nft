@@ -16,7 +16,7 @@
     $self'total_supply = 0;
     $self'admin = $admin;
     $self'mintable = true;
-    $self'multiplier = 1000000000;
+    $self'multiplier = 100000000000;
     $self'collection_address = $collection_address;
     return ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'multiplier);
 }
@@ -31,16 +31,16 @@
     $self'total_supply = ($self'total_supply + $amount);
     var ($winit'code, $winit'data) = ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'multiplier)~$Token$_fun_getJettonWalletInit($to);
     slice $walletAddress = $global_contractAddress(($winit'code, $winit'data));
-    $global_send($SendParameters$_constructor_to_value_bounce_mode_body_code_data($walletAddress, 0, false, 64, $TokenTransferInternal$_store_cell($TokenTransferInternal$_constructor_queryId_amount_from_responseAddress_forward_ton_amount_forward_payload(0, $amount, $self'collection_address, my_address(), 0, $global_emptySlice())), $winit'code, $winit'data));
+    $global_send($SendParameters$_constructor_to_value_bounce_mode_body_code_data($walletAddress, 0, true, (64 + 2), $TokenTransferInternal$_store_cell($TokenTransferInternal$_constructor_queryId_amount_from_responseAddress_forward_ton_amount_forward_payload(0, $amount, my_address(), $responseAddress, 0, $global_emptySlice())), $winit'code, $winit'data));
     return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'multiplier), ());
 }
 
-((int, int, slice, slice, cell, int), ()) $Token$_fun_burn((int, int, slice, slice, cell, int) $self, int $burnAmount, slice $responseAddress, int $queryId, slice $walletAddress) impure inline_ref {
+((int, int, slice, slice, cell, int), ()) $Token$_fun_burn((int, int, slice, slice, cell, int) $self, int $burnAmount, slice $responseAddress, int $queryId, slice $ownerAddress) impure inline_ref {
     var (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'multiplier)) = $self;
     $self'total_supply = ($self'total_supply - $burnAmount);
     var ($winit'code, $winit'data) = ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'multiplier)~$Token$_fun_getJettonWalletInit($responseAddress);
-    $global_send($SendParameters$_constructor_to_value_bounce_body($global_contractAddress(($winit'code, $winit'data)), 100, false, $TokenExcesses$_store_cell($TokenExcesses$_constructor_queryId(0))));
-    ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'multiplier)~$Token$_fun_forward($self'collection_address, $Defractionalize$_store_cell($Defractionalize$_constructor_sender($walletAddress)), false, null());
+    $global_send($SendParameters$_constructor_to_mode_value_bounce_body($global_contractAddress(($winit'code, $winit'data)), (2 + 1), 100, false, $TokenExcesses$_store_cell($TokenExcesses$_constructor_queryId(0))));
+    ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'multiplier)~$Token$_fun_forward($self'collection_address, $Defractionalize$_store_cell($Defractionalize$_constructor_sender($ownerAddress)), false, null());
     return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'multiplier), ());
 }
 
@@ -123,7 +123,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmRb4WnaPgRKxZpVRepo8nEnxbkUVaa2xG6rQcJcJPMCwj";
+    return "ipfs://QmdfiMLHyP93YGgJirN1HCgRCjhxdUdDwT3kxYYotAz2sC";
 }
 
 _ lazy_deployment_completed() method_id {

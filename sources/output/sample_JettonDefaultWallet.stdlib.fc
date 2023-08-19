@@ -127,14 +127,3 @@ slice $global_contractAddress((cell, cell) $s) impure inline {
     cell $c = end_cell($b);
     send_raw_message($c, $params'mode);
 }
-
-int $Context$_fun_readForwardFee((int, slice, int, slice) $self) impure inline_ref {
-    var (($self'bounced, $self'sender, $self'value, $self'raw)) = $self;
-    var (($self'bounced, $self'sender, $self'value, $self'raw)) = $self;
-    slice $sc = $self'raw;
-    $sc~__tact_load_address();
-    $sc~load_coins();
-    $sc~skip_bits(1);
-    $sc~load_coins();
-    return (($sc~load_coins() * 3) / 2);
-}

@@ -108,8 +108,8 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 ;; $global_send
 () $global_send((int, slice, int, int, cell, cell, cell) $params) impure inline_ref;
 
-;; $Context$_fun_readForwardFee
-int $Context$_fun_readForwardFee((int, slice, int, slice) $self) impure inline_ref;
+;; $Context$_fun_newReadForwardFee
+int $Context$_fun_newReadForwardFee((int, slice, int, slice) $self) impure inline_ref;
 
 ;; $TokenTransferInternal$_constructor_queryId_amount_from_responseAddress_forward_ton_amount_forward_payload
 ((int, int, slice, slice, int, slice)) $TokenTransferInternal$_constructor_queryId_amount_from_responseAddress_forward_ton_amount_forward_payload(int queryId, int amount, slice from, slice responseAddress, int forward_ton_amount, slice forward_payload) inline;
@@ -132,14 +132,11 @@ int $Context$_fun_readForwardFee((int, slice, int, slice) $self) impure inline_r
 ;; $SendParameters$_constructor_to_value_mode_bounce_body_code_data
 ((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body_code_data(slice to, int value, int mode, int bounce, cell body, cell code, cell data) inline;
 
-;; $SendParameters$_constructor_to_value_bounce_body_mode
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_bounce_body_mode(slice to, int value, int bounce, cell body, int mode) inline;
+;; $SendParameters$_constructor_to_value_mode_bounce_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline;
 
 ;; $TokenNotification$_constructor_queryId_amount_from_forward_payload
 ((int, int, slice, slice)) $TokenNotification$_constructor_queryId_amount_from_forward_payload(int queryId, int amount, slice from, slice forward_payload) inline;
-
-;; $SendParameters$_constructor_to_value_mode_bounce_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline;
 
 ;; $TokenBurnNotification$_constructor_queryId_amount_owner_responseAddress
 ((int, int, slice, slice)) $TokenBurnNotification$_constructor_queryId_amount_owner_responseAddress(int queryId, int amount, slice owner, slice responseAddress) inline;

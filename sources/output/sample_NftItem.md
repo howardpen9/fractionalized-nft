@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: NftItem
-BOC Size: 1781 bytes
+BOC Size: 1782 bytes
 
 # Types
 Total Types: 28
@@ -65,14 +65,6 @@ Signature: `TokenUpdateContent{content:Maybe ^cell}`
 TLB: `_ balance:int257 owner:address master:address walletCode:^cell = JettonWalletData`
 Signature: `JettonWalletData{balance:int257,owner:address,master:address,walletCode:^cell}`
 
-## GetRoyaltyParams
-TLB: `get_royalty_params#693d3950 query_id:uint64 = GetRoyaltyParams`
-Signature: `GetRoyaltyParams{query_id:uint64}`
-
-## ReportRoyaltyParams
-TLB: `report_royalty_params#a8cb00ad query_id:uint64 numerator:uint16 denominator:uint16 destination:address = ReportRoyaltyParams`
-Signature: `ReportRoyaltyParams{query_id:uint64,numerator:uint16,denominator:uint16,destination:address}`
-
 ## Fractionalize
 TLB: `fractionalize#f26348d9 item_index:uint32 original_applicant:address = Fractionalize`
 Signature: `Fractionalize{item_index:uint32,original_applicant:address}`
@@ -80,6 +72,14 @@ Signature: `Fractionalize{item_index:uint32,original_applicant:address}`
 ## Defractionalize
 TLB: `defractionalize#c004c6f1 sender:address = Defractionalize`
 Signature: `Defractionalize{sender:address}`
+
+## GetRoyaltyParams
+TLB: `get_royalty_params#693d3950 query_id:uint64 = GetRoyaltyParams`
+Signature: `GetRoyaltyParams{query_id:uint64}`
+
+## ReportRoyaltyParams
+TLB: `report_royalty_params#a8cb00ad query_id:uint64 numerator:uint16 denominator:uint16 destination:address = ReportRoyaltyParams`
+Signature: `ReportRoyaltyParams{query_id:uint64,numerator:uint16,denominator:uint16,destination:address}`
 
 ## CollectionData
 TLB: `_ next_item_index:int257 collection_content:^cell admin:address = CollectionData`

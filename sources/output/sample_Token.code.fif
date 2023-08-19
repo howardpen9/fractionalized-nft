@@ -42,7 +42,7 @@ PROGRAM{
   DECLPROC $JettonDefaultWallet$_init_child
   DECLPROC $Token$_fun_getJettonWalletInit
   DECLPROC $Token$_fun_mint
-  DECLPROC $SendParameters$_constructor_to_value_bounce_body
+  DECLPROC $SendParameters$_constructor_to_mode_value_bounce_body
   DECLPROC $TokenExcesses$_constructor_queryId
   DECLPROC $Defractionalize$_constructor_sender
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
@@ -326,7 +326,7 @@ PROGRAM{
     0 PUSHINT
     TRUE
     3 2 BLKSWAP
-    1000000000 PUSHINT
+    100000000000 PUSHINT
   }>
   $Token$_contract_load PROCREF:<{
     c4 PUSH
@@ -522,38 +522,37 @@ PROGRAM{
     $JettonDefaultWallet$_init_child INLINECALLDICT
   }>
   $Token$_fun_mint PROCREF:<{
-    DROP
-    s7 s7 XCPU
+    s8 s1 XCPU
     ADD
-    6 -ROLL
+    6 2 BLKSWAP
     $Token$_fun_getJettonWalletInit INLINECALLDICT
     2DUP
     $global_contractAddress INLINECALLDICT
     0 PUSHINT
-    FALSE
-    64 PUSHINT
+    TRUE
+    66 PUSHINT
     s2 PUSH
     MYADDR
     OVER
     $global_emptySlice INLINECALLDICT
-    s3 s4 XCHG
-    s3 16 s() XCHG
-    s12 PUSH
-    3 -ROLL
+    s3 s5 XCHG
+    s4 16 s() XCHG
+    s2 s3 XCHG
+    s2 17 s() XCHG
     $TokenTransferInternal$_constructor_queryId_amount_from_responseAddress_forward_ton_amount_forward_payload INLINECALLDICT
     $TokenTransferInternal$_store_cell INLINECALLDICT
-    s3 s6 XCHG
-    s5 s4 s0 XCHG3
-    s3 s12 XCHG
-    -ROT
+    s6 s5 s0 XCHG3
+    s4 s12 XCHG
+    s3 s11 XCHG
+    s0 s12 s11 XCHG3
     $SendParameters$_constructor_to_value_bounce_mode_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
-    5 ROLL
+    s3 s5 XCHG
+    2 3 BLKSWAP
   }>
-  $SendParameters$_constructor_to_value_bounce_body PROCINLINE:<{
-    s3 s3 s0 XCHG3
-    0 PUSHINT
-    SWAP
+  $SendParameters$_constructor_to_mode_value_bounce_body PROCINLINE:<{
+    s1 s4 XCHG
+    s1 s3 XCHG
     PUSHNULL
     PUSHNULL
   }>
@@ -593,12 +592,13 @@ PROGRAM{
     s0 s7 XCHG
     $Token$_fun_getJettonWalletInit INLINECALLDICT
     $global_contractAddress INLINECALLDICT
+    3 PUSHINT
     100 PUSHINT
     FALSE
     0 PUSHINT
     $TokenExcesses$_constructor_queryId INLINECALLDICT
     $TokenExcesses$_store_cell INLINECALLDICT
-    $SendParameters$_constructor_to_value_bounce_body INLINECALLDICT
+    $SendParameters$_constructor_to_mode_value_bounce_body INLINECALLDICT
     $global_send INLINECALLDICT
     s0 s6 XCHG
     $Defractionalize$_constructor_sender INLINECALLDICT
@@ -730,7 +730,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d526234576e615067524b785a70565265706f386e456e78626b55566161327847367251634a634a504d43776a} PUSHSLICE
+    x{697066733a2f2f516d6466694d4c48795039335947674a69724e3148436752436a6878645564447754336b7859596f74417a327343} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

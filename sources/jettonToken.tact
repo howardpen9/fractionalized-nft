@@ -1,5 +1,7 @@
 // import "@stdlib/jetton";
 
+// const multiplier: Int as coins == 100000000000; // TODO: equal 100 TOKENS(Since we have 9 digits after the decimal point)
+
 struct MasterData {
     total_supply: Int;
     mintable: Bool;
@@ -33,9 +35,6 @@ message(0x7bdd97de) TokenBurnNotification {
 }
 
 contract Token {
-    const minTonsForStorage: Int = ton("0.01");
-    const gasConsumption: Int = ton("0.01");
-
     total_supply: Int as coins;
     mintable: Bool;
 
@@ -48,7 +47,7 @@ contract Token {
         self.total_supply = 0;
         self.admin = admin;
         self.mintable = true;
-        self.multiplier = 1000000000; // TODO
+        self.multiplier = 100000000000; // TODO: equal 100 TOKENS(Since we have 9 digits after the decimal point)
         self.collection_address = collection_address;
     }
 
@@ -88,13 +87,13 @@ contract Token {
         send(SendParameters{
             to: walletAddress, 
             value: 0, 
-            bounce: false,
-            mode: SendRemainingValue,
+            bounce: true,
+            mode: SendRemainingValue + SendIgnoreErrors,
             body: TokenTransferInternal{ 
                 queryId: 0,
                 amount: amount,
-                from: self.collection_address,
-                responseAddress: myAddress(),
+                from: myAddress(),
+                responseAddress: responseAddress,
                 forward_ton_amount: 0,
                 forward_payload: emptySlice()
             }.toCell(),
@@ -103,7 +102,7 @@ contract Token {
         });
     }
 
-    fun burn(burnAmount: Int, responseAddress: Address, queryId: Int, walletAddress: Address) {
+    fun burn(burnAmount: Int, responseAddress: Address, queryId: Int, ownerAddress: Address) {
         // Update total supply
         self.total_supply = self.total_supply - burnAmount;
 
@@ -111,6 +110,7 @@ contract Token {
         let winit: StateInit = self.getJettonWalletInit(responseAddress);
         send(SendParameters{
             to: contractAddress(winit),
+            mode: SendIgnoreErrors + SendPayGasSeparately,
             value: ton("0.0000001"),
             bounce: false,
             body: TokenExcesses{
@@ -122,7 +122,7 @@ contract Token {
         // Send a confirmation back to the collection address
         self.forward(
             self.collection_address,
-            Defractionalize{ sender: walletAddress }.toCell(),
+            Defractionalize{ sender: ownerAddress }.toCell(),
             false,
             null
         );
@@ -150,8 +150,8 @@ contract Token {
 }
 
 contract JettonDefaultWallet {
-    const minTonsForStorage: Int = ton("0.01");
-    const gasConsumption: Int = ton("0.01");
+    // const minTonsForStorage: Int = ton("0.01");
+    // const gasConsumption: Int = ton("0.01");
 
     balance: Int;
     owner: Address;
@@ -174,12 +174,12 @@ contract JettonDefaultWallet {
         require(self.balance >= 0, "Invalid balance");
 
         // Gas checks
-        let fwdFee: Int = ctx.readForwardFee();
+        let fwdFee: Int = ctx.newReadForwardFee();
         let fwdCount: Int = 1;
         if (msg.forward_ton_amount > 0) {
             fwdCount = 2;
         }
-        require(ctx.value > fwdCount * fwdFee + 2 * self.gasConsumption + self.minTonsForStorage, "Invalid value");
+        require(ctx.value > fwdCount * fwdFee + 2 * gasConsumption + minTonsForStorage, "Invalid value");
 
         // Send tokens
         let init: StateInit = initOf JettonDefaultWallet(self.master, msg.destination);
@@ -193,7 +193,7 @@ contract JettonDefaultWallet {
                 queryId: msg.queryId,
                 amount: msg.amount,
                 from: self.owner,
-                responseAddress: myAddress(),
+                responseAddress: self.owner,
                 forward_ton_amount: msg.forward_ton_amount,
                 forward_payload: msg.forward_payload
             }.toCell(),
@@ -219,23 +219,23 @@ contract JettonDefaultWallet {
             send(SendParameters{
                 to: self.owner,
                 value: msg.forward_ton_amount,
+                mode: SendIgnoreErrors,
                 bounce: false,
                 body: TokenNotification{
                     queryId: msg.queryId,
                     amount: msg.amount,
                     from: msg.from,
                     forward_payload: msg.forward_payload
-                }.toCell(),
-                mode: SendIgnoreErrors
+                }.toCell()
             });
         }
 
         let msgValue: Int = self.msgValue(ctx.value);  // Get value for gas
-        let fwdFee: Int = ctx.readForwardFee();
+        let fwdFee: Int = ctx.newReadForwardFee();
         msgValue = msgValue - msg.forward_ton_amount - fwdFee;
 
         // Cashback
-        if (msg.responseAddress != null) {
+        if (msg.responseAddress != null && msgValue > 0) {
             send(SendParameters{
                 to: msg.responseAddress,
                 value: msgValue,
@@ -251,16 +251,14 @@ contract JettonDefaultWallet {
     get fun msgValue(value: Int): Int {
         let msgValue: Int = value;
         let tonBalanceBeforeMsg: Int = myBalance() - msgValue;
-        let storageFee: Int = self.minTonsForStorage - min(tonBalanceBeforeMsg, self.minTonsForStorage);
-        msgValue = msgValue - (storageFee + self.gasConsumption);
+        let storageFee: Int = minTonsForStorage - min(tonBalanceBeforeMsg, minTonsForStorage);
+        msgValue = msgValue - (storageFee + gasConsumption);
         return msgValue;
     }
 
     // This Burn msg only decrease balance of wallet, but not decrease total supply
     receive(msg: TokenBurn) {
-
-        // Check sender
-        let ctx: Context = context();
+        let ctx: Context = context(); // Check sender
         require(ctx.sender == self.owner, "Invalid sender");
 
         // Update balance
@@ -268,8 +266,8 @@ contract JettonDefaultWallet {
         require(self.balance >= 0, "Invalid balance");
 
         // Gas checks
-        let fwdFee: Int = ctx.readForwardFee();
-        require(ctx.value > fwdFee + 2 * self.gasConsumption + self.minTonsForStorage, "Invalid value");
+        let fwdFee: Int = ctx.newReadForwardFee();
+        require(ctx.value > fwdFee + 2 * gasConsumption + minTonsForStorage, "Invalid value");
 
         // Burn tokens
         send(SendParameters{
@@ -286,6 +284,32 @@ contract JettonDefaultWallet {
         });
     }
 
+    receive("Redeem") {
+        let ctx: Context = context(); // Check sender
+        require(ctx.sender == self.owner, "Invalid sender");
+
+        // Update balance
+        self.balance = self.balance - 100000000000;
+        require(self.balance >= 0, "Invalid balance");
+
+        // Gas checks
+        let fwdFee: Int = ctx.newReadForwardFee();
+        require(ctx.value > fwdFee + 2 * gasConsumption + minTonsForStorage, "Invalid value");
+
+        // Burn tokens
+        send(SendParameters{
+            to: self.master,
+            value: 0,
+            mode: SendRemainingValue,
+            bounce: true,
+            body: TokenBurnNotification{
+                queryId: 0,
+                amount: 100000000000,
+                owner: self.owner,
+                responseAddress: myAddress()
+            }.toCell()
+        });
+    }
 
     bounced(msg: Slice) {
         msg.skipBits(32); // 0xFFFFFFFF
@@ -343,14 +367,6 @@ message(0x595f07bc) TokenBurn {
 }
 
 
-
-// message TokenBurnConfirmation {
-//     queryId: Int as uint64;
-//     amount: Int as coins;
-// }
-
-
-
 message(0xd53276db) TokenExcesses {
     queryId: Int as uint64;
 }
@@ -364,4 +380,14 @@ struct JettonWalletData {
     owner: Address;
     master: Address;
     walletCode: Cell;
+}
+
+
+extends fun newReadForwardFee(self: Context): Int {
+        let sc: Slice = self.raw;
+        sc.loadAddress();  // Skip destination
+        sc.loadCoins();    // Skip value
+        sc.skipBits(1);    // Skip extracurrency collection
+        sc.loadCoins();    // Skip ihr_fee
+        return (sc.loadCoins() * 3) / 2;
 }

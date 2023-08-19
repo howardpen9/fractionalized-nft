@@ -1,6 +1,6 @@
 # TACT Compilation Report
-Contract: JettonDefaultWallet
-BOC Size: 2288 bytes
+Contract: Factory
+BOC Size: 402 bytes
 
 # Types
 Total Types: 28
@@ -118,12 +118,7 @@ TLB: `_ is_initialized:bool index:int257 collection_address:address owner_addres
 Signature: `GetNftData{is_initialized:bool,index:int257,collection_address:address,owner_address:address,individual_content:^cell}`
 
 # Get Methods
-Total Get Methods: 2
-
-## msgValue
-Argument: value
-
-## get_wallet_data
+Total Get Methods: 0
 
 # Error Codes
 2: Stack undeflow

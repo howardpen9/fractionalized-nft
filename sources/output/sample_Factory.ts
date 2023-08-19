@@ -1487,36 +1487,30 @@ function dictValueParserGetNftData(): DictionaryValue<GetNftData> {
     }
 }
 
- type NftItem_init_args = {
-    $$type: 'NftItem_init_args';
+ type Factory_init_args = {
+    $$type: 'Factory_init_args';
     collection_address: Address;
-    item_index: bigint;
-    owner: Address;
-    individual_content: Cell;
 }
 
-function initNftItem_init_args(src: NftItem_init_args) {
+function initFactory_init_args(src: Factory_init_args) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeAddress(src.collection_address);
-        b_0.storeInt(src.item_index, 257);
-        b_0.storeAddress(src.owner);
-        b_0.storeRef(src.individual_content);
     };
 }
 
-async function NftItem_init(collection_address: Address, item_index: bigint, owner: Address, individual_content: Cell) {
-    const __code = Cell.fromBase64('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');
-    const __system = Cell.fromBase64('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');
+async function Factory_init(collection_address: Address) {
+    const __code = Cell.fromBase64('te6ccgECCgEAAYYAART/APSkE/S88sgLAQIBYgIDAs7QAdDTAwFxsKMB+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiFRQUwNvBPhhAvhi2zxZ2zzy4ILI+EMBzH8BygABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiM8Wye1UBAUCAVgGBwCy7UTQ1AH4Y9IAAY4g+kABINdJgQELuvLgiCDXCwoggQT/uvLQiYMJuvLgiDHg+CjXCwqDCbry4In6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIAdEAGgGSMH/gINdJMcIfMHAAlbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcJ2XTlqzTstzOg6WbZRm6KSAIBSAgJABGwr7tRNDSAAGAAdbJu40NWlwZnM6Ly9RbVF2WENFUkh0Q0I4Q05xSDNxVkViaEFOTDNvYm45Y0tlUmJXZVg0RTdUejZygg');
+    const __system = Cell.fromBase64('te6cckECDAEAAZAAAQHAAQEFoF5JAgEU/wD0pBP0vPLICwMCAWIJBAIBWAgFAgFIBwYAdbJu40NWlwZnM6Ly9RbVF2WENFUkh0Q0I4Q05xSDNxVkViaEFOTDNvYm45Y0tlUmJXZVg0RTdUejZyggABGwr7tRNDSAAGAAlbu9GCcFzsPV0srnsehOw51kqFG2aCcJ3WNS0rZHyzItOvLf3xYjmCcCBVwBuAZ2OUzlg6rkclssOCcJ2XTlqzTstzOg6WbZRm6KSALO0AHQ0wMBcbCjAfpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IhUUFMDbwT4YQL4Yts8Wds88uCCyPhDAcx/AcoAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IjPFsntVAsKABoBkjB/4CDXSTHCHzBwALLtRNDUAfhj0gABjiD6QAEg10mBAQu68uCIINcLCiCBBP+68tCJgwm68uCIMeD4KNcLCoMJuvLgifpAASDXSYEBC7ry4Igg1wsKIIEE/7ry0ImDCbry4IgB0cZd8n8=');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
-    initNftItem_init_args({ $$type: 'NftItem_init_args', collection_address, item_index, owner, individual_content })(builder);
+    initFactory_init_args({ $$type: 'Factory_init_args', collection_address })(builder);
     const __data = builder.endCell();
     return { code: __code, data: __data };
 }
 
-const NftItem_errors: { [key: number]: { message: string } } = {
+const Factory_errors: { [key: number]: { message: string } } = {
     2: { message: `Stack undeflow` },
     3: { message: `Stack overflow` },
     4: { message: `Integer overflow` },
@@ -1559,59 +1553,31 @@ const NftItem_errors: { [key: number]: { message: string } } = {
     62972: { message: `Invalid balance` },
 }
 
-export class NftItem implements Contract {
+export class Factory implements Contract {
     
-    static async init(collection_address: Address, item_index: bigint, owner: Address, individual_content: Cell) {
-        return await NftItem_init(collection_address, item_index, owner, individual_content);
+    static async init(collection_address: Address) {
+        return await Factory_init(collection_address);
     }
     
-    static async fromInit(collection_address: Address, item_index: bigint, owner: Address, individual_content: Cell) {
-        const init = await NftItem_init(collection_address, item_index, owner, individual_content);
+    static async fromInit(collection_address: Address) {
+        const init = await Factory_init(collection_address);
         const address = contractAddress(0, init);
-        return new NftItem(address, init);
+        return new Factory(address, init);
     }
     
     static fromAddress(address: Address) {
-        return new NftItem(address);
+        return new Factory(address);
     }
     
     readonly address: Address; 
     readonly init?: { code: Cell, data: Cell };
     readonly abi: ContractABI = {
-        errors: NftItem_errors
+        errors: Factory_errors
     };
     
     private constructor(address: Address, init?: { code: Cell, data: Cell }) {
         this.address = address;
         this.init = init;
-    }
-    
-    async send(provider: ContractProvider, via: Sender, args: { value: bigint, bounce?: boolean| null | undefined }, message: Transfer | GetStaticData | 'f' | RedeemNftItem) {
-        
-        let body: Cell | null = null;
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'Transfer') {
-            body = beginCell().store(storeTransfer(message)).endCell();
-        }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'GetStaticData') {
-            body = beginCell().store(storeGetStaticData(message)).endCell();
-        }
-        if (message === 'f') {
-            body = beginCell().storeUint(0, 32).storeStringTail(message).endCell();
-        }
-        if (message && typeof message === 'object' && !(message instanceof Slice) && message.$$type === 'RedeemNftItem') {
-            body = beginCell().store(storeRedeemNftItem(message)).endCell();
-        }
-        if (body === null) { throw new Error('Invalid message type'); }
-        
-        await provider.internal(via, { ...args, body: body });
-        
-    }
-    
-    async getGetNftData(provider: ContractProvider) {
-        let builder = new TupleBuilder();
-        let source = (await provider.get('get_nft_data', builder.build())).stack;
-        const result = loadTupleGetNftData(source);
-        return result;
     }
     
 }

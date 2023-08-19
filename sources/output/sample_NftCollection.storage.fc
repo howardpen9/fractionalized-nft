@@ -59,6 +59,31 @@ cell $TokenMinting$_store_cell((slice, slice) v) inline {
 }
 
 ;;
+;; Type: Fractionalize
+;; Header: 0xf26348d9
+;; TLB: fractionalize#f26348d9 item_index:uint32 original_applicant:address = Fractionalize
+;;
+
+(slice, ((int, slice))) $Fractionalize$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 4066592985);
+    var v'item_index = sc_0~load_uint(32);
+    var v'original_applicant = sc_0~__tact_load_address();
+    return (sc_0, (v'item_index, v'original_applicant));
+}
+
+;;
+;; Type: Defractionalize
+;; Header: 0xc004c6f1
+;; TLB: defractionalize#c004c6f1 sender:address = Defractionalize
+;;
+
+(slice, ((slice))) $Defractionalize$_load(slice sc_0) inline {
+    throw_unless(129, sc_0~load_uint(32) == 3221538545);
+    var v'sender = sc_0~__tact_load_address();
+    return (sc_0, (v'sender));
+}
+
+;;
 ;; Type: GetRoyaltyParams
 ;; Header: 0x693d3950
 ;; TLB: get_royalty_params#693d3950 query_id:uint64 = GetRoyaltyParams
@@ -92,31 +117,6 @@ cell $ReportRoyaltyParams$_store_cell((int, int, int, slice) v) inline {
 
 ((int, int, int, slice)) $ReportRoyaltyParams$_constructor_query_id_numerator_denominator_destination(int query_id, int numerator, int denominator, slice destination) inline {
     return (query_id, numerator, denominator, destination);
-}
-
-;;
-;; Type: Fractionalize
-;; Header: 0xf26348d9
-;; TLB: fractionalize#f26348d9 item_index:uint32 original_applicant:address = Fractionalize
-;;
-
-(slice, ((int, slice))) $Fractionalize$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 4066592985);
-    var v'item_index = sc_0~load_uint(32);
-    var v'original_applicant = sc_0~__tact_load_address();
-    return (sc_0, (v'item_index, v'original_applicant));
-}
-
-;;
-;; Type: Defractionalize
-;; Header: 0xc004c6f1
-;; TLB: defractionalize#c004c6f1 sender:address = Defractionalize
-;;
-
-(slice, ((slice))) $Defractionalize$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 3221538545);
-    var v'sender = sc_0~__tact_load_address();
-    return (sc_0, (v'sender));
 }
 
 ;;

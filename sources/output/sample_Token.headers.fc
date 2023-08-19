@@ -132,8 +132,8 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 ;; $Token$_fun_mint
 ((int, int, slice, slice, cell, int), ()) $Token$_fun_mint((int, int, slice, slice, cell, int) $self, slice $to, int $amount, slice $responseAddress) impure inline_ref;
 
-;; $SendParameters$_constructor_to_value_bounce_body
-((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_bounce_body(slice to, int value, int bounce, cell body) inline;
+;; $SendParameters$_constructor_to_mode_value_bounce_body
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_mode_value_bounce_body(slice to, int mode, int value, int bounce, cell body) inline;
 
 ;; $TokenExcesses$_constructor_queryId
 ((int)) $TokenExcesses$_constructor_queryId(int queryId) inline;
@@ -148,7 +148,7 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 ((int, int, slice, slice, cell, int), ()) $Token$_fun_forward((int, int, slice, slice, cell, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref;
 
 ;; $Token$_fun_burn
-((int, int, slice, slice, cell, int), ()) $Token$_fun_burn((int, int, slice, slice, cell, int) $self, int $burnAmount, slice $responseAddress, int $queryId, slice $walletAddress) impure inline_ref;
+((int, int, slice, slice, cell, int), ()) $Token$_fun_burn((int, int, slice, slice, cell, int) $self, int $burnAmount, slice $responseAddress, int $queryId, slice $ownerAddress) impure inline_ref;
 
 ;; $Token$_fun_getWalletAddress
 ((int, int, slice, slice, cell, int), slice) $Token$_fun_getWalletAddress((int, int, slice, slice, cell, int) $self, slice $owner) impure inline_ref;

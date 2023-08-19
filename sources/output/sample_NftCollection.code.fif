@@ -20,11 +20,11 @@ PROGRAM{
   DECLPROC __tact_string_builder_append
   DECLPROC $TokenMinting$_store
   DECLPROC $TokenMinting$_store_cell
+  DECLPROC $Fractionalize$_load
+  DECLPROC $Defractionalize$_load
   DECLPROC $GetRoyaltyParams$_load
   DECLPROC $ReportRoyaltyParams$_store
   DECLPROC $ReportRoyaltyParams$_store_cell
-  DECLPROC $Fractionalize$_load
-  DECLPROC $Defractionalize$_load
   DECLPROC $RoyaltyParams$_store
   DECLPROC $RoyaltyParams$_load
   DECLPROC $RedeemNftItem$_store
@@ -52,6 +52,7 @@ PROGRAM{
   DECLPROC $Token$_init_child
   DECLPROC $SendParameters$_constructor_to_value_bounce_mode_body_code_data
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
+  DECLPROC $NftCollection$_fun_restTransactionValue
   DECLPROC $Transfer$_constructor_query_id_new_owner_response_destination_custom_payload_forward_amount_forward_payload
   DECLPROC $NftItem$_init_child
   DECLPROC $NftCollection$_fun_getNftItemInit
@@ -327,6 +328,24 @@ PROGRAM{
     $TokenMinting$_store INLINECALLDICT
     ENDC
   }>
+  $Fractionalize$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    4066592985 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    32 LDU
+    __tact_load_address INLINECALLDICT
+    s1 s2 XCHG
+  }>
+  $Defractionalize$_load PROCINLINE:<{
+    32 LDU
+    SWAP
+    3221538545 PUSHINT
+    EQUAL
+    129 THROWIFNOT
+    __tact_load_address INLINECALLDICT
+  }>
   $GetRoyaltyParams$_load PROCINLINE:<{
     32 LDU
     SWAP
@@ -352,24 +371,6 @@ PROGRAM{
     4 -ROLL
     $ReportRoyaltyParams$_store INLINECALLDICT
     ENDC
-  }>
-  $Fractionalize$_load PROCINLINE:<{
-    32 LDU
-    SWAP
-    4066592985 PUSHINT
-    EQUAL
-    129 THROWIFNOT
-    32 LDU
-    __tact_load_address INLINECALLDICT
-    s1 s2 XCHG
-  }>
-  $Defractionalize$_load PROCINLINE:<{
-    32 LDU
-    SWAP
-    3221538545 PUSHINT
-    EQUAL
-    129 THROWIFNOT
-    __tact_load_address INLINECALLDICT
   }>
   $RoyaltyParams$_store PROCINLINE:<{
     s2 s3 XCHG2
@@ -718,6 +719,18 @@ PROGRAM{
   }>
   $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
   }>
+  $NftCollection$_fun_restTransactionValue PROCREF:<{
+    __tact_my_balance INLINECALLDICT
+    OVER
+    SUB
+    10000000 PUSHINT
+    TUCK
+    MIN
+    SUB
+    10000000 PUSHINT
+    ADD
+    SUB
+  }>
   $Transfer$_constructor_query_id_new_owner_response_destination_custom_payload_forward_amount_forward_payload PROCINLINE:<{
   }>
   $NftItem$_init_child PROCREF:<{
@@ -872,17 +885,27 @@ PROGRAM{
     __tact_context_get INLINECALLDICT
     DROP
     s2 POP
-    __tact_my_balance INLINECALLDICT
-    s2 PUSH
-    SUB
-    30000000 PUSHINT
-    TUCK
-    MIN
-    SUB
-    30000000 PUSHINT
-    ADD
-    s1 s2 XCHG
-    SUB
+    s10 s9 s8 PUSH3
+    s10 s9 s8 PUSH3
+    s10 s9 s8 PUSH3
+    s9 19 s() XCHG
+    s8 18 s() XCHG
+    s7 17 s() XCHG
+    s6 16 s() XCHG
+    s5 s15 XCHG
+    s4 s14 XCHG
+    s3 s13 XCHG
+    s12 s11 s10 XCHG3
+    $NftCollection$_fun_restTransactionValue INLINECALLDICT
+    9 1 BLKDROP2
+    s9 s10 XCHG
+    s8 s9 XCHG
+    s7 s8 XCHG
+    s6 s7 XCHG
+    s5 s6 XCHG
+    s4 s5 XCHG
+    s3 s4 XCHG
+    s1 s3 s0 XCHG3
     $NftCollection$_fun_mint INLINECALLDICT
   }>
   $NftCollection$_internal_binary_GetRoyaltyParams PROCINLINE:<{
@@ -973,21 +996,27 @@ PROGRAM{
     s11 s(-1) PUXC
     __tact_dict_get_int_int INLINECALLDICT
     __tact_not_null INLINECALLDICT
+    257 PUSHINT
+    PUSHNULL
+    s1 s11 PUSH2
+    s4 s5 XCHG
+    -ROT
+    __tact_dict_set_int_int INLINECALLDICT
     s0 s9 XCHG
     INC
     s7 s6 s5 PUSH3
     s7 s6 s5 PUSH3
-    s7 s14 s6 PUSH3
+    s15 s14 s6 PUSH3
     s9 16 s() XCHG
     s8 s15 XCHG
     s7 s14 XCHG
     s6 s13 XCHG
     s5 s12 XCHG
     s4 s11 XCHG
-    s3 s10 XCHG
+    s3 18 s() XCHG
     s2 17 s() XCHG
     s1 16 s() XCHG
-    s0 18 s() XCHG
+    s0 s10 XCHG
     $NftCollection$_fun_get_nft_address_by_index INLINECALLDICT
     9 1 BLKDROP2
     __tact_not_null INLINECALLDICT
@@ -998,8 +1027,7 @@ PROGRAM{
     s5 s9 XCHG
     s4 s8 XCHG
     s3 s7 XCHG
-    s6 s5 s0 XCHG3
-    s1 s2 XCHG
+    s1 s6 s0 XCHG3
     FALSE
     PUSHNULL
     $NftCollection$_fun_forward INLINECALLDICT
@@ -1047,7 +1075,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d58415a47477a34354a46725a7a5564675854445447455a5844546742754152615473544139545a734a4e7067} PUSHSLICE
+    x{697066733a2f2f516d614c364259373657583656724c6e504b3371416f647947456979656664464b346b73436b7a7678674c394b6a} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

@@ -20,6 +20,13 @@
     return ($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index);
 }
 
+((int, slice, (int, int, slice), cell, cell, int, int), int) $NftCollection$_fun_restTransactionValue((int, slice, (int, int, slice), cell, cell, int, int) $self, int $msgValue) impure inline_ref {
+    var (($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index)) = $self;
+    int $tonBalanceBeforeMsg = (__tact_my_balance() - $msgValue);
+    int $storageFee = (10000000 - min($tonBalanceBeforeMsg, 10000000));
+    return (($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index), ($msgValue - ($storageFee + 10000000)));
+}
+
 ((int, slice, (int, int, slice), cell, cell, int, int), (cell, cell)) $NftCollection$_fun_getNftItemInit((int, slice, (int, int, slice), cell, cell, int, int) $self, int $item_index) impure inline_ref {
     var (($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index)) = $self;
     return (($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index), $NftItem$_init_child(__tact_context_sys, my_address(), $item_index, $self'admin, $self'collection_content));
@@ -75,11 +82,7 @@
 ((int, slice, (int, int, slice), cell, cell, int, int), ()) $NftCollection$_internal_text_247c7bd5f39e2258d80ac36a0419a1ab5779757825a6cc0e915368f00610a18a((int, slice, (int, int, slice), cell, cell, int, int) $self) impure inline {
     var ($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    int $msgValue = $ctx'value;
-    int $tonBalanceBeforeMsg = (__tact_my_balance() - $msgValue);
-    int $storageFee = (30000000 - min($tonBalanceBeforeMsg, 30000000));
-    $msgValue = ($msgValue - ($storageFee + 30000000));
-    ($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index)~$NftCollection$_fun_mint($ctx'sender, $msgValue);
+    ($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index)~$NftCollection$_fun_mint($ctx'sender, ($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index)~$NftCollection$_fun_restTransactionValue($ctx'value));
     return (($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index), ());
 }
 
@@ -124,6 +127,7 @@
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     throw_unless(38283, ( __tact_slice_eq_bits(($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index)~$NftCollection$_fun_getTokenAddress(), $ctx'sender) ));
     int $redeem_nft_id = __tact_not_null(__tact_dict_get_int_int($self'fractionalized_nft, 257, $self'redeem_index, 257));
+    $self'fractionalized_nft~__tact_dict_set_int_int(257, $self'redeem_index, null(), 257);
     $self'redeem_index = ($self'redeem_index + 1);
     ($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index)~$NftCollection$_fun_forward(__tact_not_null(($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index)~$NftCollection$_fun_get_nft_address_by_index($redeem_nft_id)), $RedeemNftItem$_store_cell($RedeemNftItem$_constructor_new_owner($msg'sender)), false, null());
     return (($self'next_item_index, $self'admin, ($self'royalty_params'numerator, $self'royalty_params'denominator, $self'royalty_params'destination), $self'collection_content, $self'fractionalized_nft, $self'fractional_index, $self'redeem_index), ());
@@ -183,7 +187,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmXAZGGz45JFrZzUdgXTDTGEZXDTgBuARaTsTA9TZsJNpg";
+    return "ipfs://QmaL6BY76WX6VrLnPK3qAodyGEiyefdFK4ksCkzvxgL9Kj";
 }
 
 _ lazy_deployment_completed() method_id {

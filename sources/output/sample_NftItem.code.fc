@@ -42,8 +42,8 @@
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     int $msgValue = $ctx'value;
     int $tonBalanceBeforeMsg = (__tact_my_balance() - $msgValue);
-    int $storageFee = (30000000 - min($tonBalanceBeforeMsg, 30000000));
-    $msgValue = ($msgValue - ($storageFee + 30000000));
+    int $storageFee = (10000000 - min($tonBalanceBeforeMsg, 10000000));
+    $msgValue = ($msgValue - ($storageFee + 10000000));
     throw_unless(49280, ( __tact_slice_eq_bits($self'owner, $ctx'sender) ));
     throw_unless(19671, ($self'locked == false));
     if (($self'is_initialized == false)) {
@@ -88,7 +88,7 @@
     throw_unless(1045, ($self'locked == true));
     $self'locked = false;
     $self'owner = $msg'new_owner;
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'new_owner, 0, (2 + 64), false, __gen_cell_comment_37e90db9d1f7725dc0128ee6bad2035fb50479e09a488a29257bed01a23050a0()));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($msg'new_owner, 0, (2 + 64), false, __gen_cell_comment_e50c7a6103b5f065276c6febac2e2d098b448272c53c4da4fbfc635ea6dcc2a9()));
     return (($self'collection_address, $self'item_index, $self'owner, $self'individual_content, $self'is_initialized, $self'locked), ());
 }
 
@@ -112,7 +112,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://Qmemcs2KaASNZZ7CyHKx9zJrKTXfTzSmjC9KYuSCsKcWmC";
+    return "ipfs://QmUR3nCvQAFca3yt3P7Gu3E3LxEt59ZYydWAzfRhfhK2N6";
 }
 
 _ lazy_deployment_completed() method_id {

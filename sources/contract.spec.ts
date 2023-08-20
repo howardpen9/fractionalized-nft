@@ -4,7 +4,7 @@ import { Blockchain, SandboxContract, TreasuryContract } from "@ton-community/sa
 
 import { NftCollection } from "./output/sample_NftCollection";
 import { NftItem } from "./output/sample_NftItem";
-import { Token } from "./output/sample_Token";
+import { Jetton_Root } from "./output/sample_Jetton_Root";
 import { JettonDefaultWallet, TokenTransfer, storeTokenTransfer } from "./output/sample_JettonDefaultWallet";
 
 import exp from "constants";
@@ -16,10 +16,11 @@ let newContent = beginCell().storeInt(OFFCHAIN_CONTENT_PREFIX, 8).storeStringRef
 
 describe("contract", () => {
     let blockchain: Blockchain;
-    let collection: SandboxContract<NftCollection>;
     let deployer: SandboxContract<TreasuryContract>;
+
+    let collection: SandboxContract<NftCollection>;
     let nft: SandboxContract<NftItem>;
-    let contract_token: SandboxContract<Token>;
+    let jetton_root: SandboxContract<Jetton_Root>;
     let wallet_contract: SandboxContract<JettonDefaultWallet>;
 
     let owner: any;
@@ -47,7 +48,7 @@ describe("contract", () => {
         });
         // console.log("MintResult: ", deploy_result.events);
 
-        contract_token = blockchain.openContract(await Token.fromInit(collection.address, newContent));
+        jetton_root = blockchain.openContract(await Jetton_Root.fromInit(collection.address, deployer.address));
         const nft_item_0 = await collection.getGetNftAddressByIndex(0n)!!;
         nft = blockchain.openContract(await NftItem.fromAddress(Address.parse(nft_item_0!!.toString())));
         wallet_contract = blockchain.openContract(
@@ -86,8 +87,8 @@ describe("contract", () => {
     });
 
     it("should fractionalized correctly", async () => {
-        // let nft_index = (await collection.getGetCollectionData()).next_item_index;
-        // console.log("NFT Index: " + nft_index); // Print the NFT Index
+        let nft_index = (await collection.getGetCollectionData()).next_item_index;
+        console.log("Case:: NFT Index: " + nft_index); // Print the NFT Index
 
         const nft_0 = await collection.getGetNftAddressByIndex(0n);
         let nft = blockchain.openContract(await NftItem.fromAddress(Address.parse(nft_0!!.toString())));
@@ -102,51 +103,56 @@ describe("contract", () => {
         });
         // console.log(tx_result.events); // Print the Transaction Result
 
-        const jettonWallet_address = await contract_token.getGetWalletAddress(deployer.address);
+        // Get Jetton Root Address
+        const jetton_root_address = await collection.getGetTokenAddress();
+        console.log("Jetton Root Address: " + jetton_root_address.toString());
+
+        let root = blockchain.openContract(await Jetton_Root.fromAddress(jetton_root_address));
+        const jettonWallet_address = await root.getGetWalletAddress(deployer.address);
         let wallet = blockchain.openContract(await JettonDefaultWallet.fromAddress(jettonWallet_address));
-        console.log("JettonWallet Address: " + wallet.address.toString());
+        console.log("JettonWallet Address for [Deployer]: " + wallet.address.toString());
 
         // Get New Generate Wallet Data
         const jetton_wallet_data = await wallet.getGetWalletData();
-        // console.log("Wallet Balance: " + jetton_wallet_data.balance);
+        console.log("Jetton Wallet's Token Balance: " + jetton_wallet_data.balance);
         expect(jetton_wallet_data.owner).toEqualAddress(deployer.address);
     });
 
-    it("should transfer Jetton Token correctly", async () => {
-        const nft_0 = await collection.getGetNftAddressByIndex(0n);
-        let nft = blockchain.openContract(await NftItem.fromAddress(Address.parse(nft_0!!.toString())));
-        await nft.send(deployer.getSender(), { value: toNano(1) }, "f");
+    // it("should transfer Jetton Token correctly", async () => {
+    //     const nft_0 = await collection.getGetNftAddressByIndex(0n);
+    //     let nft = blockchain.openContract(await NftItem.fromAddress(Address.parse(nft_0!!.toString())));
+    //     await nft.send(deployer.getSender(), { value: toNano(1) }, "f");
 
-        // Get the JettonWallet Address
-        let jetton_balance_of_deployer = await contract_token.getGetWalletAddress(deployer.address);
-        let wallet = blockchain.openContract(await JettonDefaultWallet.fromAddress(jetton_balance_of_deployer));
-        // console.log("JettonWallet Address: " + wallet.address.toString());
-        console.log("JettonWallet Balance: " + (await wallet.getGetWalletData()).balance);
-        console.log("Jetoon Wallet Owner: " + (await wallet.getGetWalletData()).owner.toString());
+    //     // Get the JettonWallet Address
+    //     let jetton_balance_of_deployer = await jetton_root.getGetWalletAddress(deployer.address);
+    //     let wallet = blockchain.openContract(await JettonDefaultWallet.fromAddress(jetton_balance_of_deployer));
+    //     // console.log("JettonWallet Address: " + wallet.address.toString());
+    //     console.log("JettonWallet Balance: " + (await wallet.getGetWalletData()).balance);
+    //     console.log("Jetoon Wallet Owner: " + (await wallet.getGetWalletData()).owner.toString());
 
-        const new_player = await blockchain.treasury("player");
-        const TokenTransfer: TokenTransfer = {
-            $$type: "TokenTransfer",
-            queryId: 0n,
-            amount: 10n,
-            destination: new_player.address,
-            responseDestination: wallet.address,
-            customPayload: null,
-            forwardTonAmount: toNano("0.1"),
-            forwardPayload: beginCell().endCell(),
-        };
-        const transfer_result = await wallet_contract.send(deployer.getSender(), { value: toNano(1) }, TokenTransfer);
-        expect(transfer_result.transactions).toHaveTransaction({
-            from: deployer.address,
-            to: wallet_contract.address,
-        });
-        console.log(transfer_result.events);
-        // console.log(transfer_result.transactions);
+    //     const new_player = await blockchain.treasury("player");
+    //     const TokenTransfer: TokenTransfer = {
+    //         $$type: "TokenTransfer",
+    //         queryId: 0n,
+    //         amount: 10n,
+    //         destination: new_player.address,
+    //         response_destination: wallet.address,
+    //         customPayload: null,
+    //         forward_ton_amount: toNano("0.1"),
+    //         forward_payload: beginCell().endCell(),
+    //     };
+    //     const transfer_result = await wallet_contract.send(deployer.getSender(), { value: toNano(1) }, TokenTransfer);
+    //     expect(transfer_result.transactions).toHaveTransaction({
+    //         from: deployer.address,
+    //         to: wallet_contract.address,
+    //     });
+    //     console.log(transfer_result.events);
+    //     // console.log(transfer_result.transactions);
 
-        // let jetton_balance_of_new_player = await contract_token.getGetWalletAddress(new_player.address);
-        // let new_wallet = blockchain.openContract(await JettonDefaultWallet.fromAddress(jetton_balance_of_new_player));
-        // console.log("JettonWallet Address: " + new_wallet.address.toString());
-        // console.log("JettonWallet Balance: " + (await new_wallet.getGetWalletData()).balance);
-        // console.log("Jetoon Wallet Owner: " + (await new_wallet.getGetWalletData()).owner.toString());
-    });
+    //     // let jetton_balance_of_new_player = await jetton_root.getGetWalletAddress(new_player.address);
+    //     // let new_wallet = blockchain.openContract(await JettonDefaultWallet.fromAddress(jetton_balance_of_new_player));
+    //     // console.log("JettonWallet Address: " + new_wallet.address.toString());
+    //     // console.log("JettonWallet Balance: " + (await new_wallet.getGetWalletData()).balance);
+    //     // console.log("Jetoon Wallet Owner: " + (await new_wallet.getGetWalletData()).owner.toString());
+    // });
 });

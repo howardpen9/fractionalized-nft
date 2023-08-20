@@ -206,24 +206,24 @@ cell $Transfer$_store_cell((int, slice, slice, cell, int, slice) v) inline {
 }
 
 ;;
-;; Type: Token
+;; Type: Jetton_Root
 ;;
 
-builder $Token$init$_store(builder build_0, (slice, slice) v) inline {
+builder $Jetton_Root$init$_store(builder build_0, (slice, slice) v) inline {
     var (v'admin, v'collection_address) = v;
     build_0 = __tact_store_address(build_0, v'admin);
     build_0 = __tact_store_address(build_0, v'collection_address);
     return build_0;
 }
 
-(cell, cell) $Token$_init_child(cell sys', slice $admin, slice $collection_address) inline_ref {
+(cell, cell) $Jetton_Root$_init_child(cell sys', slice $admin, slice $collection_address) inline_ref {
     slice sc' = sys'.begin_parse();
     cell source = sc'~load_dict();
     cell contracts = new_dict();
     
-    ;; Contract Code: Token
-    cell mine = __tact_dict_get_code(source, 805);
-    contracts = __tact_dict_set_code(contracts, 805, mine);
+    ;; Contract Code: Jetton_Root
+    cell mine = __tact_dict_get_code(source, 56151);
+    contracts = __tact_dict_set_code(contracts, 56151, mine);
     
     ;; Contract Code: JettonDefaultWallet
     cell code_55471 = __tact_dict_get_code(source, 55471);
@@ -233,7 +233,7 @@ builder $Token$init$_store(builder build_0, (slice, slice) v) inline {
     builder b = begin_cell();
     b = b.store_ref(begin_cell().store_dict(contracts).end_cell());
     b = b.store_int(false, 1);
-    b = $Token$init$_store(b, ($admin, $collection_address));
+    b = $Jetton_Root$init$_store(b, ($admin, $collection_address));
     return (mine, b.end_cell());
 }
 

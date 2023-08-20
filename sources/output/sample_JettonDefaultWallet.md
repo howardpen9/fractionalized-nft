@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: JettonDefaultWallet
-BOC Size: 2321 bytes
+BOC Size: 2043 bytes
 
 # Types
 Total Types: 28
@@ -17,10 +17,6 @@ Signature: `Context{bounced:bool,sender:address,value:int257,raw:^slice}`
 TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters`
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
 
-## MasterData
-TLB: `_ total_supply:int257 mintable:bool admin_address:address jetton_content:Maybe ^cell jetton_wallet_code:^cell = MasterData`
-Signature: `MasterData{total_supply:int257,mintable:bool,admin_address:address,jetton_content:Maybe ^cell,jetton_wallet_code:^cell}`
-
 ## UploadContent
 TLB: `upload_content#58dee2a2 content:^cell = UploadContent`
 Signature: `UploadContent{content:^cell}`
@@ -36,6 +32,10 @@ Signature: `SafeTokenBurn{queryId:uint64,amount:coins,owner:address,responseAddr
 ## TokenBurnNotification
 TLB: `token_burn_notification#7bdd97de queryId:uint64 amount:coins owner:address responseAddress:Maybe address = TokenBurnNotification`
 Signature: `TokenBurnNotification{queryId:uint64,amount:coins,owner:address,responseAddress:Maybe address}`
+
+## MasterData
+TLB: `_ total_supply:int257 mintable:bool admin_address:address jetton_content:Maybe ^cell jetton_wallet_code:^cell = MasterData`
+Signature: `MasterData{total_supply:int257,mintable:bool,admin_address:address,jetton_content:Maybe ^cell,jetton_wallet_code:^cell}`
 
 ## TokenTransfer
 TLB: `token_transfer#0f8a7ea5 queryId:uint64 amount:coins destination:address response_destination:address customPayload:Maybe ^cell forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransfer`
@@ -156,7 +156,6 @@ Argument: value
 16059: Invalid value
 17062: Invalid amount
 19671: locked
-21994: Only admin can upload content
 22185: not from NFT Item
 26686: Only admin can mint tokens
 38283: not from Jetton Token

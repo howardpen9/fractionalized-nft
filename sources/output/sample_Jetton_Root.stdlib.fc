@@ -143,7 +143,7 @@ slice $global_contractAddress((cell, cell) $s) impure inline {
     send_raw_message($c, $params'mode);
 }
 
-((int, int, slice, slice, cell, int), ()) $Token$_fun_forward((int, int, slice, slice, cell, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref {
+((int, int, slice, slice, cell, int), ()) $Jetton_Root$_fun_forward((int, int, slice, slice, cell, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref {
     var (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)) = $self;
     var ($init) = $init;
     cell $code = null();

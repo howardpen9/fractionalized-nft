@@ -66,9 +66,6 @@ builder $TokenNotification$_store(builder build_0, (int, int, slice, slice) v) i
 ;; $TokenNotification$_store_cell
 cell $TokenNotification$_store_cell((int, int, slice, slice) v) inline;
 
-;; $TokenBurn$_load
-(slice, ((int, int, slice, slice))) $TokenBurn$_load(slice sc_0) inline;
-
 ;; $TokenExcesses$_store
 builder $TokenExcesses$_store(builder build_0, (int) v) inline;
 
@@ -110,9 +107,6 @@ slice $global_contractAddress((cell, cell) $s) impure inline;
 
 ;; $Context$_fun_readForwardFee
 int $Context$_fun_readForwardFee((int, slice, int, slice) $self) impure inline_ref;
-
-;; $Context$_fun_newReadForwardFee
-int $Context$_fun_newReadForwardFee((int, slice, int, slice) $self) impure inline_ref;
 
 ;; $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload
 ((int, int, slice, slice, int, slice)) $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload(int queryId, int amount, slice from, slice response_destination, int forward_ton_amount, slice forward_payload) inline;

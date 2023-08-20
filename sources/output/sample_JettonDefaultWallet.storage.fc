@@ -125,21 +125,6 @@ cell $TokenNotification$_store_cell((int, int, slice, slice) v) inline {
 }
 
 ;;
-;; Type: TokenBurn
-;; Header: 0x595f07bc
-;; TLB: token_burn#595f07bc queryId:uint64 amount:coins owner:address response_destination:address = TokenBurn
-;;
-
-(slice, ((int, int, slice, slice))) $TokenBurn$_load(slice sc_0) inline {
-    throw_unless(129, sc_0~load_uint(32) == 1499400124);
-    var v'queryId = sc_0~load_uint(64);
-    var v'amount = sc_0~load_coins();
-    var v'owner = sc_0~__tact_load_address();
-    var v'response_destination = sc_0~__tact_load_address();
-    return (sc_0, (v'queryId, v'amount, v'owner, v'response_destination));
-}
-
-;;
 ;; Type: TokenExcesses
 ;; Header: 0xd53276db
 ;; TLB: token_excesses#d53276db queryId:uint64 = TokenExcesses

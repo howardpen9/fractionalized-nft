@@ -29,8 +29,8 @@ contract NftCollection {
     collection_content: Cell;   
 
     fractionalized_nft: map<Int, Int>;  // Index_ID => NFT_ID
-    fractional_index: Int as uint32 = 0;
-    redeem_index:  Int as uint32 = 0;
+    fractional_index: Int as uint32 = 0; // The index counter of fractionalized NFT
+    redeem_index:  Int as uint32 = 0; // The index counter of redeemed NFT index 
 
     init(admin: Address, collection_content: Cell, royalty_params: RoyaltyParams){
         self.admin = admin;
@@ -43,15 +43,10 @@ contract NftCollection {
         self.mint(ctx.sender, self.restTransactionValue(ctx.value));
     }
 
-    fun restTransactionValue(msgValue: Int): Int {
-        let tonBalanceBeforeMsg: Int = myBalance() - msgValue;
-        let storageFee: Int = minTonsForStorage - min(tonBalanceBeforeMsg, minTonsForStorage);
-        return msgValue - (storageFee + gasConsumption);
-    }
-
     // ===== Private Methods ===== //
     fun mint(sender: Address, msgValue: Int) {
         require(self.next_item_index >= 0, "non-sequential NFTs");
+
         let nft_init: StateInit = self.getNftItemInit(self.next_item_index);
         send(SendParameters{
                 to: contractAddress(nft_init), 
@@ -71,6 +66,7 @@ contract NftCollection {
             });
         self.next_item_index = self.next_item_index + 1;
     }
+
     // ===== Fractionalized ===== //
     receive(msg: Fractionalize) {
         let ctx: Context = context();
@@ -81,7 +77,7 @@ contract NftCollection {
         self.fractional_index = self.fractional_index + 1;                  // Index_ID++
 
         // Create a new NFT Item
-        let token_init: StateInit = initOf Token(self.admin, myAddress());
+        let token_init: StateInit = initOf Jetton_Root(self.admin, myAddress());
         self.forward(
             contractAddress(token_init),
             TokenMinting {  // 0xac33de2f
@@ -132,8 +128,14 @@ contract NftCollection {
         });        
     }
     
+    fun restTransactionValue(msgValue: Int): Int {
+        let tonBalanceBeforeMsg: Int = myBalance() - msgValue;
+        let storageFee: Int = minTonsForStorage - min(tonBalanceBeforeMsg, minTonsForStorage);
+        return msgValue - (storageFee + gasConsumption);
+    }
+
     get fun getTokenAddress(): Address {
-        let winit: StateInit = initOf Token(self.admin, myAddress());
+        let winit: StateInit = initOf Jetton_Root(self.admin, myAddress());
         return contractAddress(winit);
     }
 
@@ -169,7 +171,6 @@ contract NftCollection {
     get fun royalty_params(): RoyaltyParams {
         return self.royalty_params;
     }
-
 }
 
 struct CollectionData {
@@ -184,19 +185,16 @@ struct RoyaltyParams {
     destination: Address;
 }
 
-// ---------------------------------------------------------------------------------------------------- //
-message RedeemNftItem {
-    new_owner: Address;
-}
-
+// ---------------------------------------------------------------------------------------------------- //=
 contract NftItem {
     collection_address: Address;
     item_index: Int; 
     owner: Address;
     individual_content: Cell;
     is_initialized: Bool;
+
     locked: Bool;
-    
+
     init(collection_address: Address, item_index: Int, owner: Address, individual_content: Cell){
         self.collection_address = collection_address;
         self.item_index = item_index;
@@ -240,6 +238,7 @@ contract NftItem {
                     }.toCell()
                 }); 
             }
+            
             msgValue = msgValue - ctx.readForwardFee(); 
             if (msg.response_destination != null) { 
                 send(SendParameters{ 
@@ -316,7 +315,11 @@ contract NftItem {
         };
     }
 }
-// ---------------------------------------------------------------------------------------------------- //
+
+message RedeemNftItem {
+    new_owner: Address;
+}
+
 // [Collection Contract] -> Transfer -> OwnershipAssigned -> NFTExcesses
 message(0x5fcc3d14) Transfer { 
     query_id: Int as uint64;            
@@ -347,7 +350,6 @@ message(0x8b771735) ReportStaticData{
     collection: Address;
 }
 
-// -------------------------------- Customized Message -------------------------------- //
 struct GetNftData { 
     is_initialized: Bool;
     index: Int;

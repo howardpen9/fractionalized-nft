@@ -2,16 +2,16 @@
 #pragma allow-post-modification;
 #pragma compute-asm-ltr;
 
-#include "sample_Token.headers.fc";
-#include "sample_Token.stdlib.fc";
-#include "sample_Token.constants.fc";
-#include "sample_Token.storage.fc";
+#include "sample_Jetton_Root.headers.fc";
+#include "sample_Jetton_Root.stdlib.fc";
+#include "sample_Jetton_Root.constants.fc";
+#include "sample_Jetton_Root.storage.fc";
 
 ;;
-;; Contract Token functions
+;; Contract Jetton_Root functions
 ;;
 
-(int, int, slice, slice, cell, int) $Token$_contract_init(slice $admin, slice $collection_address) impure inline_ref {
+(int, int, slice, slice, cell, int) $Jetton_Root$_contract_init(slice $admin, slice $collection_address) impure inline_ref {
     var (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)) = (null(), null(), null(), null(), null(), 1000000000000);
     $self'total_supply = 0;
     $self'admin = $admin;
@@ -20,21 +20,21 @@
     return ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint);
 }
 
-((int, int, slice, slice, cell, int), (cell, cell)) $Token$_fun_getJettonWalletInit((int, int, slice, slice, cell, int) $self, slice $address) impure inline_ref {
+((int, int, slice, slice, cell, int), (cell, cell)) $Jetton_Root$_fun_getJettonWalletInit((int, int, slice, slice, cell, int) $self, slice $address) impure inline_ref {
     var (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)) = $self;
     return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint), $JettonDefaultWallet$_init_child(__tact_context_sys, my_address(), $address));
 }
 
-((int, int, slice, slice, cell, int), ()) $Token$_fun_mint_jetton((int, int, slice, slice, cell, int) $self, slice $to, int $amount, slice $responseAddress) impure inline_ref {
+((int, int, slice, slice, cell, int), ()) $Jetton_Root$_fun_mint_jetton((int, int, slice, slice, cell, int) $self, slice $to, int $amount, slice $responseAddress) impure inline_ref {
     var (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)) = $self;
     $self'total_supply = ($self'total_supply + $amount);
-    var ($winit'code, $winit'data) = ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Token$_fun_getJettonWalletInit($to);
+    var ($winit'code, $winit'data) = ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Jetton_Root$_fun_getJettonWalletInit($to);
     slice $walletAddress = $global_contractAddress(($winit'code, $winit'data));
     $global_send($SendParameters$_constructor_to_value_bounce_mode_body_code_data($walletAddress, 0, true, (64 + 2), $TokenTransferInternal$_store_cell($TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload(0, $amount, my_address(), $to, 0, $global_emptySlice())), $winit'code, $winit'data));
     return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint), ());
 }
 
-((int, int, slice, slice, cell, int), int) $Token$_fun_msgValue((int, int, slice, slice, cell, int) $self, int $value) impure inline_ref {
+((int, int, slice, slice, cell, int), int) $Jetton_Root$_fun_msgValue((int, int, slice, slice, cell, int) $self, int $value) impure inline_ref {
     var (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)) = $self;
     int $msgValue = $value;
     int $tonBalanceBeforeMsg = (__tact_my_balance() - $msgValue);
@@ -43,87 +43,86 @@
     return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint), $msgValue);
 }
 
-((int, int, slice, slice, cell, int), slice) $Token$_fun_get_wallet_address((int, int, slice, slice, cell, int) $self, slice $owner) impure inline_ref {
+((int, int, slice, slice, cell, int), slice) $Jetton_Root$_fun_get_wallet_address((int, int, slice, slice, cell, int) $self, slice $owner) impure inline_ref {
     var (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)) = $self;
-    var ($winit'code, $winit'data) = ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Token$_fun_getJettonWalletInit($owner);
+    var ($winit'code, $winit'data) = ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Jetton_Root$_fun_getJettonWalletInit($owner);
     return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint), $global_contractAddress(($winit'code, $winit'data)));
 }
 
-((int, int, slice, slice, cell, int), ()) $Token$_fun_burn((int, int, slice, slice, cell, int) $self, int $burnAmount, int $queryId, slice $previous_ownerAddress) impure inline_ref {
+((int, int, slice, slice, cell, int), ()) $Jetton_Root$_fun_burn((int, int, slice, slice, cell, int) $self, int $burnAmount, int $queryId, slice $previous_ownerAddress) impure inline_ref {
     var (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)) = $self;
     $self'total_supply = ($self'total_supply - $burnAmount);
-    $global_send($SendParameters$_constructor_to_mode_value_bounce_body(($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Token$_fun_get_wallet_address($previous_ownerAddress), 1, 100, false, $TokenExcesses$_store_cell($TokenExcesses$_constructor_queryId($queryId))));
+    $global_send($SendParameters$_constructor_to_mode_value_bounce_body(($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Jetton_Root$_fun_get_wallet_address($previous_ownerAddress), 1, 100, false, $TokenExcesses$_store_cell($TokenExcesses$_constructor_queryId($queryId))));
     return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint), ());
 }
 
-((int, int, slice, slice, cell, int), (int, int, slice, cell, cell)) $Token$_fun_get_jetton_data((int, int, slice, slice, cell, int) $self) impure inline_ref {
+((int, int, slice, slice, cell, int), (int, int, slice, cell, cell)) $Jetton_Root$_fun_get_jetton_data((int, int, slice, slice, cell, int) $self) impure inline_ref {
     var (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)) = $self;
-    return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint), $MasterData$_constructor_total_supply_mintable_admin_address_jetton_content_jetton_wallet_code($self'total_supply, $self'mintable, $self'admin, $self'content, $StateInit$_get_code(($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Token$_fun_getJettonWalletInit($self'admin))));
+    return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint), $MasterData$_constructor_total_supply_mintable_admin_address_jetton_content_jetton_wallet_code($self'total_supply, $self'mintable, $self'admin, $self'content, $StateInit$_get_code(($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Jetton_Root$_fun_getJettonWalletInit($self'admin))));
 }
 
 ;;
-;; Receivers of a Contract Token
+;; Receivers of a Contract Jetton_Root
 ;;
 
-(((int, int, slice, slice, cell, int)), ()) $Token$_internal_binary_UploadContent((int, int, slice, slice, cell, int) $self, (cell) $msg) impure inline {
+(((int, int, slice, slice, cell, int)), ()) $Jetton_Root$_internal_binary_UploadContent((int, int, slice, slice, cell, int) $self, (cell) $msg) impure inline {
     var ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint) = $self;
     var ($msg'content) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    throw_unless(21994, ( __tact_slice_eq_bits($self'admin, $ctx'sender) ));
     $self'content = $msg'content;
-    ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Token$_fun_forward($self'admin, __gen_cell_comment_37e90db9d1f7725dc0128ee6bad2035fb50479e09a488a29257bed01a23050a0(), false, null());
+    ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Jetton_Root$_fun_forward($self'admin, __gen_cell_comment_37e90db9d1f7725dc0128ee6bad2035fb50479e09a488a29257bed01a23050a0(), false, null());
     return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint), ());
 }
 
-(((int, int, slice, slice, cell, int)), ()) $Token$_internal_binary_TokenMinting((int, int, slice, slice, cell, int) $self, (slice, slice) $msg) impure inline {
+(((int, int, slice, slice, cell, int)), ()) $Jetton_Root$_internal_binary_TokenMinting((int, int, slice, slice, cell, int) $self, (slice, slice) $msg) impure inline {
     var ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint) = $self;
     var ($msg'collection_address, $msg'original_applicant) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
     throw_unless(26686, ( __tact_slice_eq_bits($self'collection_address, $ctx'sender) ));
-    ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Token$_fun_mint_jetton($msg'original_applicant, $self'jettoken_token_uint, $self'admin);
+    ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Jetton_Root$_fun_mint_jetton($msg'original_applicant, $self'jettoken_token_uint, $self'admin);
     return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint), ());
 }
 
-(((int, int, slice, slice, cell, int)), ()) $Token$_internal_binary_TokenBurnNotification((int, int, slice, slice, cell, int) $self, (int, int, slice, slice) $msg) impure inline {
+(((int, int, slice, slice, cell, int)), ()) $Jetton_Root$_internal_binary_TokenBurnNotification((int, int, slice, slice, cell, int) $self, (int, int, slice, slice) $msg) impure inline {
     var ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint) = $self;
     var ($msg'queryId, $msg'amount, $msg'owner, $msg'responseAddress) = $msg;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    throw_unless(53832, ( __tact_slice_eq_bits(($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Token$_fun_get_wallet_address($msg'owner), $ctx'sender) ));
+    throw_unless(53832, ( __tact_slice_eq_bits(($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Jetton_Root$_fun_get_wallet_address($msg'owner), $ctx'sender) ));
     throw_unless(17062, ($msg'amount == $self'jettoken_token_uint));
     throw_unless(62176, (($self'total_supply - $msg'amount) >= 0));
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'collection_address, ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Token$_fun_msgValue($ctx'value), 2, false, $Defractionalize$_store_cell($Defractionalize$_constructor_sender($msg'owner))));
-    ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Token$_fun_burn($msg'amount, $msg'queryId, $msg'owner);
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'collection_address, ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Jetton_Root$_fun_msgValue($ctx'value), 2, false, $Defractionalize$_store_cell($Defractionalize$_constructor_sender($msg'owner))));
+    ($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)~$Jetton_Root$_fun_burn($msg'amount, $msg'queryId, $msg'owner);
     return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint), ());
 }
 
 ;;
-;; Get methods of a Contract Token
+;; Get methods of a Contract Jetton_Root
 ;;
 
 _ %msgValue(int $$value) method_id(115218) {
     int $value = $$value;
-    var self = $Token$_contract_load();
-    var res = self~$Token$_fun_msgValue($value);
+    var self = $Jetton_Root$_contract_load();
+    var res = self~$Jetton_Root$_fun_msgValue($value);
     return res;
 }
 
 _ %getJettonWalletInit(slice $$address) method_id(109053) {
     slice $address = __tact_verify_address($$address);
-    var self = $Token$_contract_load();
-    var res = self~$Token$_fun_getJettonWalletInit($address);
+    var self = $Jetton_Root$_contract_load();
+    var res = self~$Jetton_Root$_fun_getJettonWalletInit($address);
     return $StateInit$_to_external(res);
 }
 
 _ %get_wallet_address(slice $$owner) method_id(103289) {
     slice $owner = __tact_verify_address($$owner);
-    var self = $Token$_contract_load();
-    var res = self~$Token$_fun_get_wallet_address($owner);
+    var self = $Jetton_Root$_contract_load();
+    var res = self~$Jetton_Root$_fun_get_wallet_address($owner);
     return res;
 }
 
 _ %get_jetton_data() method_id(106029) {
-    var self = $Token$_contract_load();
-    var res = self~$Token$_fun_get_jetton_data();
+    var self = $Jetton_Root$_contract_load();
+    var res = self~$Jetton_Root$_fun_get_jetton_data();
     return $MasterData$_to_external(res);
 }
 
@@ -137,7 +136,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmPPgxZYT1xxdEYadQ94ajcm2VmYvmqzC9fpBdpGR186Qe";
+    return "ipfs://QmQU2RCfN9a18BWAv3spxSMaoG1Zwi1JLWmrfSaXtcLSbp";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -145,10 +144,10 @@ _ lazy_deployment_completed() method_id {
 }
 
 ;;
-;; Routing of a Contract Token
+;; Routing of a Contract Jetton_Root
 ;;
 
-((int, int, slice, slice, cell, int), int) $Token$_contract_router_internal((int, int, slice, slice, cell, int) self, int msg_bounced, slice in_msg) impure inline_ref {
+((int, int, slice, slice, cell, int), int) $Jetton_Root$_contract_router_internal((int, int, slice, slice, cell, int) self, int msg_bounced, slice in_msg) impure inline_ref {
     ;; Handle bounced messages
     if (msg_bounced) {
         return (self, true);
@@ -164,21 +163,21 @@ _ lazy_deployment_completed() method_id {
     ;; Receive UploadContent message
     if (op == 1491002018) {
         var msg = in_msg~$UploadContent$_load();
-        self~$Token$_internal_binary_UploadContent(msg);
+        self~$Jetton_Root$_internal_binary_UploadContent(msg);
         return (self, true);
     }
     
     ;; Receive TokenMinting message
     if (op == 2889080367) {
         var msg = in_msg~$TokenMinting$_load();
-        self~$Token$_internal_binary_TokenMinting(msg);
+        self~$Jetton_Root$_internal_binary_TokenMinting(msg);
         return (self, true);
     }
     
     ;; Receive TokenBurnNotification message
     if (op == 2078119902) {
         var msg = in_msg~$TokenBurnNotification$_load();
-        self~$Token$_internal_binary_TokenBurnNotification(msg);
+        self~$Jetton_Root$_internal_binary_TokenBurnNotification(msg);
         return (self, true);
     }
     
@@ -196,14 +195,14 @@ _ lazy_deployment_completed() method_id {
     __tact_context_sender = msg_sender_addr;
     
     ;; Load contract data
-    var self = $Token$_contract_load();
+    var self = $Jetton_Root$_contract_load();
     
     ;; Handle operation
-    int handled = self~$Token$_contract_router_internal(msg_bounced, in_msg);
+    int handled = self~$Jetton_Root$_contract_router_internal(msg_bounced, in_msg);
     
     ;; Throw if not handled
     throw_unless(130, handled);
     
     ;; Persist state
-    $Token$_contract_store(self);
+    $Jetton_Root$_contract_store(self);
 }

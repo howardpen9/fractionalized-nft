@@ -41,20 +41,6 @@ _ $StateInit$_get_code((cell, cell) v) inline {
 }
 
 ;;
-;; Type: MasterData
-;; TLB: _ total_supply:int257 mintable:bool admin_address:address jetton_content:Maybe ^cell jetton_wallet_code:^cell = MasterData
-;;
-
-(int, int, slice, cell, cell) $MasterData$_to_external(((int, int, slice, cell, cell)) v) inline {
-    var (v'total_supply, v'mintable, v'admin_address, v'jetton_content, v'jetton_wallet_code) = v; 
-    return (v'total_supply, v'mintable, v'admin_address, v'jetton_content, v'jetton_wallet_code);
-}
-
-((int, int, slice, cell, cell)) $MasterData$_constructor_total_supply_mintable_admin_address_jetton_content_jetton_wallet_code(int total_supply, int mintable, slice admin_address, cell jetton_content, cell jetton_wallet_code) inline {
-    return (total_supply, mintable, admin_address, jetton_content, jetton_wallet_code);
-}
-
-;;
 ;; Type: UploadContent
 ;; Header: 0x58dee2a2
 ;; TLB: upload_content#58dee2a2 content:^cell = UploadContent
@@ -92,6 +78,20 @@ _ $StateInit$_get_code((cell, cell) v) inline {
     var v'owner = sc_0~__tact_load_address();
     var v'responseAddress = sc_0~__tact_load_address_opt();
     return (sc_0, (v'queryId, v'amount, v'owner, v'responseAddress));
+}
+
+;;
+;; Type: MasterData
+;; TLB: _ total_supply:int257 mintable:bool admin_address:address jetton_content:Maybe ^cell jetton_wallet_code:^cell = MasterData
+;;
+
+(int, int, slice, cell, cell) $MasterData$_to_external(((int, int, slice, cell, cell)) v) inline {
+    var (v'total_supply, v'mintable, v'admin_address, v'jetton_content, v'jetton_wallet_code) = v; 
+    return (v'total_supply, v'mintable, v'admin_address, v'jetton_content, v'jetton_wallet_code);
+}
+
+((int, int, slice, cell, cell)) $MasterData$_constructor_total_supply_mintable_admin_address_jetton_content_jetton_wallet_code(int total_supply, int mintable, slice admin_address, cell jetton_content, cell jetton_wallet_code) inline {
+    return (total_supply, mintable, admin_address, jetton_content, jetton_wallet_code);
 }
 
 ;;
@@ -163,10 +163,10 @@ cell $Defractionalize$_store_cell((slice) v) inline {
 }
 
 ;;
-;; Type: Token
+;; Type: Jetton_Root
 ;;
 
-builder $Token$_store(builder build_0, (int, int, slice, slice, cell, int) v) inline {
+builder $Jetton_Root$_store(builder build_0, (int, int, slice, slice, cell, int) v) inline {
     var (v'total_supply, v'mintable, v'admin, v'collection_address, v'content, v'jettoken_token_uint) = v;
     build_0 = build_0.store_coins(v'total_supply);
     build_0 = build_0.store_int(v'mintable, 1);
@@ -177,7 +177,7 @@ builder $Token$_store(builder build_0, (int, int, slice, slice, cell, int) v) in
     return build_0;
 }
 
-(slice, ((int, int, slice, slice, cell, int))) $Token$_load(slice sc_0) inline {
+(slice, ((int, int, slice, slice, cell, int))) $Jetton_Root$_load(slice sc_0) inline {
     var v'total_supply = sc_0~load_coins();
     var v'mintable = sc_0~load_int(1);
     var v'admin = sc_0~__tact_load_address();
@@ -187,32 +187,32 @@ builder $Token$_store(builder build_0, (int, int, slice, slice, cell, int) v) in
     return (sc_0, (v'total_supply, v'mintable, v'admin, v'collection_address, v'content, v'jettoken_token_uint));
 }
 
-(slice, ((slice, slice))) $Token$init$_load(slice sc_0) inline {
+(slice, ((slice, slice))) $Jetton_Root$init$_load(slice sc_0) inline {
     var v'admin = sc_0~__tact_load_address();
     var v'collection_address = sc_0~__tact_load_address();
     return (sc_0, (v'admin, v'collection_address));
 }
 
-(int, int, slice, slice, cell, int) $Token$_contract_load() impure inline_ref {
+(int, int, slice, slice, cell, int) $Jetton_Root$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~$Token$_load();
+        return $sc~$Jetton_Root$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice admin, slice collection_address) = $sc~$Token$init$_load();
+        (slice admin, slice collection_address) = $sc~$Jetton_Root$init$_load();
         $sc.end_parse();
-        return $Token$_contract_init(admin, collection_address);
+        return $Jetton_Root$_contract_init(admin, collection_address);
     }
 }
 
-() $Token$_contract_store((int, int, slice, slice, cell, int) v) impure inline {
+() $Jetton_Root$_contract_store((int, int, slice, slice, cell, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = $Token$_store(b, v);
+    b = $Jetton_Root$_store(b, v);
     set_data(b.end_cell());
 }
 

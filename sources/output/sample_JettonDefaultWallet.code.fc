@@ -18,17 +18,6 @@
     return ($self'balance, $self'owner, $self'master, $self'jettoken_token_uint);
 }
 
-int $Context$_fun_newReadForwardFee((int, slice, int, slice) $self) impure inline_ref {
-    var (($self'bounced, $self'sender, $self'value, $self'raw)) = $self;
-    var (($self'bounced, $self'sender, $self'value, $self'raw)) = $self;
-    slice $sc = $self'raw;
-    $sc~__tact_load_address();
-    $sc~load_coins();
-    $sc~skip_bits(1);
-    $sc~load_coins();
-    return (($sc~load_coins() * 3) / 2);
-}
-
 ((int, slice, slice, int), int) $JettonDefaultWallet$_fun_msgValue((int, slice, slice, int) $self, int $value) impure inline_ref {
     var (($self'balance, $self'owner, $self'master, $self'jettoken_token_uint)) = $self;
     int $msgValue = $value;
@@ -59,7 +48,7 @@ int $Context$_fun_newReadForwardFee((int, slice, int, slice) $self) impure inlin
     throw_unless(4429, ( __tact_slice_eq_bits($self'owner, $ctx'sender) ));
     $self'balance = ($self'balance - $msg'amount);
     throw_unless(62972, ($self'balance >= 0));
-    int $fwdFee = $Context$_fun_newReadForwardFee(($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw));
+    int $fwdFee = $Context$_fun_readForwardFee(($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw));
     int $fwdCount = 1;
     if (($msg'forward_ton_amount > 0)) {
         $fwdCount = 2;
@@ -93,19 +82,6 @@ int $Context$_fun_newReadForwardFee((int, slice, int, slice) $self) impure inlin
     return (($self'balance, $self'owner, $self'master, $self'jettoken_token_uint), ());
 }
 
-(((int, slice, slice, int)), ()) $JettonDefaultWallet$_internal_binary_TokenBurn((int, slice, slice, int) $self, (int, int, slice, slice) $msg) impure inline {
-    var ($self'balance, $self'owner, $self'master, $self'jettoken_token_uint) = $self;
-    var ($msg'queryId, $msg'amount, $msg'owner, $msg'response_destination) = $msg;
-    var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
-    throw_unless(4429, ( __tact_slice_eq_bits($self'owner, $ctx'sender) ));
-    $self'balance = ($self'balance - $msg'amount);
-    throw_unless(62972, ($self'balance >= 0));
-    int $fwdFee = $Context$_fun_newReadForwardFee(($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw));
-    throw_unless(16059, ($ctx'value > (($fwdFee + (2 * 50000000)) + 50000000)));
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'master, 0, 64, true, $TokenBurnNotification$_store_cell($TokenBurnNotification$_constructor_queryId_amount_owner_responseAddress($msg'queryId, $msg'amount, $self'owner, my_address()))));
-    return (($self'balance, $self'owner, $self'master, $self'jettoken_token_uint), ());
-}
-
 ((int, slice, slice, int), ()) $JettonDefaultWallet$_internal_text_041fc8435e986414de5ec504f636c56d274d3f94285802d72324f24e45e32dd9((int, slice, slice, int) $self) impure inline {
     var ($self'balance, $self'owner, $self'master, $self'jettoken_token_uint) = $self;
     var ($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw) = __tact_context_get();
@@ -113,7 +89,7 @@ int $Context$_fun_newReadForwardFee((int, slice, int, slice) $self) impure inlin
     throw_unless(50669, ($ctx'value >= 300000000));
     $self'balance = ($self'balance - $self'jettoken_token_uint);
     throw_unless(62972, ($self'balance >= 0));
-    int $fwdFee = $Context$_fun_newReadForwardFee(($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw));
+    int $fwdFee = $Context$_fun_readForwardFee(($ctx'bounced, $ctx'sender, $ctx'value, $ctx'raw));
     throw_unless(16059, ($ctx'value > (($fwdFee + (2 * 50000000)) + 50000000)));
     $global_send($SendParameters$_constructor_to_value_mode_bounce_body($self'master, 250000000, (2 + 1), true, $TokenBurnNotification$_store_cell($TokenBurnNotification$_constructor_queryId_amount_owner_responseAddress(0, $self'jettoken_token_uint, $self'owner, my_address()))));
     return (($self'balance, $self'owner, $self'master, $self'jettoken_token_uint), ());
@@ -157,7 +133,7 @@ _ supported_interfaces() method_id {
 }
 
 _ get_abi_ipfs() method_id {
-    return "ipfs://QmXP5bKzkvpRKCkKSa4azrSweGASm7JRbMYU5XxBpn1qt4";
+    return "ipfs://QmYbA9htjKP2zw4CrcNXjTZiWvNrPMreVzN8mJLoy2NULM";
 }
 
 _ lazy_deployment_completed() method_id {
@@ -205,13 +181,6 @@ _ lazy_deployment_completed() method_id {
     if (op == 395134233) {
         var msg = in_msg~$TokenTransferInternal$_load();
         self~$JettonDefaultWallet$_internal_binary_TokenTransferInternal(msg);
-        return (self, true);
-    }
-    
-    ;; Receive TokenBurn message
-    if (op == 1499400124) {
-        var msg = in_msg~$TokenBurn$_load();
-        self~$JettonDefaultWallet$_internal_binary_TokenBurn(msg);
         return (self, true);
     }
     

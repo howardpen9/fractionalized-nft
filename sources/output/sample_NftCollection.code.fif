@@ -38,7 +38,7 @@ PROGRAM{
   DECLPROC $StateInit$_to_external
   DECLPROC $CollectionData$_to_external
   DECLPROC $RoyaltyParams$_to_external
-  DECLPROC $Token$init$_store
+  DECLPROC $Jetton_Root$init$_store
   DECLPROC $NftCollection$init$_load
   DECLPROC $NftItem$init$_store
   DECLPROC $NftCollection$_contract_init
@@ -49,14 +49,14 @@ PROGRAM{
   DECLPROC $global_emptySlice
   DECLPROC $global_contractAddress
   DECLPROC $global_send
-  DECLPROC $Token$_init_child
+  DECLPROC $Jetton_Root$_init_child
   DECLPROC $SendParameters$_constructor_to_value_bounce_mode_body_code_data
   DECLPROC $SendParameters$_constructor_bounce_to_value_mode_body_code_data
-  DECLPROC $NftCollection$_fun_restTransactionValue
   DECLPROC $Transfer$_constructor_query_id_new_owner_response_destination_custom_payload_forward_amount_forward_payload
   DECLPROC $NftItem$_init_child
   DECLPROC $NftCollection$_fun_getNftItemInit
   DECLPROC $NftCollection$_fun_mint
+  DECLPROC $NftCollection$_fun_restTransactionValue
   DECLPROC $NftCollection$_fun_getTokenAddress
   DECLPROC $CollectionData$_constructor_next_item_index_collection_content_admin
   DECLPROC $NftCollection$_fun_get_collection_data
@@ -490,7 +490,7 @@ PROGRAM{
   }>
   $RoyaltyParams$_to_external PROCINLINE:<{
   }>
-  $Token$init$_store PROCINLINE:<{
+  $Jetton_Root$init$_store PROCINLINE:<{
     -ROT
     __tact_store_address INLINECALLDICT
     SWAP
@@ -679,17 +679,17 @@ PROGRAM{
     SWAP
     SENDRAWMSG
   }>
-  $Token$_init_child PROCREF:<{
+  $Jetton_Root$_init_child PROCREF:<{
     s0 s2 XCHG
     CTOS
     LDDICT
     DROP
     NEWDICT
     OVER
-    805 PUSHINT
+    56151 PUSHINT
     __tact_dict_get_code INLINECALLDICT
     SWAP
-    805 PUSHINT
+    56151 PUSHINT
     s2 PUSH
     __tact_dict_set_code INLINECALLDICT
     s0 s2 XCHG
@@ -710,7 +710,7 @@ PROGRAM{
     SWAP
     1 STI
     s0 s0 s3 XCHG3
-    $Token$init$_store INLINECALLDICT
+    $Jetton_Root$init$_store INLINECALLDICT
     ENDC
   }>
   $SendParameters$_constructor_to_value_bounce_mode_body_code_data PROCINLINE:<{
@@ -718,18 +718,6 @@ PROGRAM{
     s4 s5 XCHG
   }>
   $SendParameters$_constructor_bounce_to_value_mode_body_code_data PROCINLINE:<{
-  }>
-  $NftCollection$_fun_restTransactionValue PROCREF:<{
-    __tact_my_balance INLINECALLDICT
-    OVER
-    SUB
-    50000000 PUSHINT
-    TUCK
-    MIN
-    SUB
-    50000000 PUSHINT
-    ADD
-    SUB
   }>
   $Transfer$_constructor_query_id_new_owner_response_destination_custom_payload_forward_amount_forward_payload PROCINLINE:<{
   }>
@@ -812,11 +800,23 @@ PROGRAM{
     s3 s5 XCHG
     s4 s3 s0 XCHG3
   }>
+  $NftCollection$_fun_restTransactionValue PROCREF:<{
+    __tact_my_balance INLINECALLDICT
+    OVER
+    SUB
+    50000000 PUSHINT
+    TUCK
+    MIN
+    SUB
+    50000000 PUSHINT
+    ADD
+    SUB
+  }>
   $NftCollection$_fun_getTokenAddress PROCREF:<{
     __tact_context_sys GETGLOB
     MYADDR
     s9 s(-1) PUXC
-    $Token$_init_child INLINECALLDICT
+    $Jetton_Root$_init_child INLINECALLDICT
     $global_contractAddress INLINECALLDICT
   }>
   $CollectionData$_constructor_next_item_index_collection_content_admin PROCINLINE:<{
@@ -929,7 +929,7 @@ PROGRAM{
     __tact_context_sys GETGLOB
     MYADDR
     s6 s(-1) PUXC
-    $Token$_init_child INLINECALLDICT
+    $Jetton_Root$_init_child INLINECALLDICT
     2DUP
     $global_contractAddress INLINECALLDICT
     MYADDR
@@ -1075,7 +1075,7 @@ PROGRAM{
     209474421377847335869795010607481022628 PUSHINT
   }>
   get_abi_ipfs PROC:<{
-    x{697066733a2f2f516d4e79677a45716a36644c6257745667433464536b523672374d5a58334b6e6a4d4c326a467355666a687a4e70} PUSHSLICE
+    x{697066733a2f2f516d6255714c5539774868785432317746764c66616d4a633857416f3342316b5a34326f3579703432487542526f} PUSHSLICE
   }>
   lazy_deployment_completed PROC:<{
     c4 PUSH

@@ -36,18 +36,8 @@ _ $StateInit$_get_code((cell, cell) v) inline {
     return (bounce, to, value, mode, body, code, data);
 }
 
-;;
-;; Type: MasterData
-;; TLB: _ total_supply:int257 mintable:bool admin:address jetton_content:Maybe ^cell jetton_wallet_code:^cell = MasterData
-;;
-
-(int, int, slice, cell, cell) $MasterData$_to_external(((int, int, slice, cell, cell)) v) inline {
-    var (v'total_supply, v'mintable, v'admin, v'jetton_content, v'jetton_wallet_code) = v; 
-    return (v'total_supply, v'mintable, v'admin, v'jetton_content, v'jetton_wallet_code);
-}
-
-((int, int, slice, cell, cell)) $MasterData$_constructor_total_supply_mintable_admin_jetton_content_jetton_wallet_code(int total_supply, int mintable, slice admin, cell jetton_content, cell jetton_wallet_code) inline {
-    return (total_supply, mintable, admin, jetton_content, jetton_wallet_code);
+((int, slice, int, int, cell, cell, cell)) $SendParameters$_constructor_to_value_mode_bounce_body(slice to, int value, int mode, int bounce, cell body) inline {
+    return (bounce, to, value, mode, body, null(), null());
 }
 
 ;;
@@ -91,18 +81,32 @@ _ $StateInit$_get_code((cell, cell) v) inline {
 }
 
 ;;
+;; Type: MasterData
+;; TLB: _ total_supply:int257 mintable:bool admin_address:address jetton_content:Maybe ^cell jetton_wallet_code:^cell = MasterData
+;;
+
+(int, int, slice, cell, cell) $MasterData$_to_external(((int, int, slice, cell, cell)) v) inline {
+    var (v'total_supply, v'mintable, v'admin_address, v'jetton_content, v'jetton_wallet_code) = v; 
+    return (v'total_supply, v'mintable, v'admin_address, v'jetton_content, v'jetton_wallet_code);
+}
+
+((int, int, slice, cell, cell)) $MasterData$_constructor_total_supply_mintable_admin_address_jetton_content_jetton_wallet_code(int total_supply, int mintable, slice admin_address, cell jetton_content, cell jetton_wallet_code) inline {
+    return (total_supply, mintable, admin_address, jetton_content, jetton_wallet_code);
+}
+
+;;
 ;; Type: TokenTransferInternal
 ;; Header: 0x178d4519
-;; TLB: token_transfer_internal#178d4519 queryId:uint64 amount:coins from:address responseAddress:address forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransferInternal
+;; TLB: token_transfer_internal#178d4519 queryId:uint64 amount:coins from:address response_destination:address forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransferInternal
 ;;
 
 builder $TokenTransferInternal$_store(builder build_0, (int, int, slice, slice, int, slice) v) inline_ref {
-    var (v'queryId, v'amount, v'from, v'responseAddress, v'forward_ton_amount, v'forward_payload) = v;
+    var (v'queryId, v'amount, v'from, v'response_destination, v'forward_ton_amount, v'forward_payload) = v;
     build_0 = store_uint(build_0, 395134233, 32);
     build_0 = build_0.store_uint(v'queryId, 64);
     build_0 = build_0.store_coins(v'amount);
     build_0 = __tact_store_address(build_0, v'from);
-    build_0 = __tact_store_address(build_0, v'responseAddress);
+    build_0 = __tact_store_address(build_0, v'response_destination);
     build_0 = build_0.store_coins(v'forward_ton_amount);
     build_0 = build_0.store_slice(v'forward_payload);
     return build_0;
@@ -112,8 +116,8 @@ cell $TokenTransferInternal$_store_cell((int, int, slice, slice, int, slice) v) 
     return $TokenTransferInternal$_store(begin_cell(), v).end_cell();
 }
 
-((int, int, slice, slice, int, slice)) $TokenTransferInternal$_constructor_queryId_amount_from_responseAddress_forward_ton_amount_forward_payload(int queryId, int amount, slice from, slice responseAddress, int forward_ton_amount, slice forward_payload) inline {
-    return (queryId, amount, from, responseAddress, forward_ton_amount, forward_payload);
+((int, int, slice, slice, int, slice)) $TokenTransferInternal$_constructor_queryId_amount_from_response_destination_forward_ton_amount_forward_payload(int queryId, int amount, slice from, slice response_destination, int forward_ton_amount, slice forward_payload) inline {
+    return (queryId, amount, from, response_destination, forward_ton_amount, forward_payload);
 }
 
 ;;
@@ -159,56 +163,56 @@ cell $Defractionalize$_store_cell((slice) v) inline {
 }
 
 ;;
-;; Type: Token
+;; Type: Jetton_Root
 ;;
 
-builder $Token$_store(builder build_0, (int, int, slice, slice, cell, int) v) inline {
-    var (v'total_supply, v'mintable, v'admin, v'collection_address, v'content, v'multiplier) = v;
+builder $Jetton_Root$_store(builder build_0, (int, int, slice, slice, cell, int) v) inline {
+    var (v'total_supply, v'mintable, v'admin, v'collection_address, v'content, v'jettoken_token_uint) = v;
     build_0 = build_0.store_coins(v'total_supply);
     build_0 = build_0.store_int(v'mintable, 1);
     build_0 = __tact_store_address(build_0, v'admin);
     build_0 = __tact_store_address(build_0, v'collection_address);
     build_0 = ~ null?(v'content) ? build_0.store_int(true, 1).store_ref(v'content) : build_0.store_int(false, 1);
-    build_0 = build_0.store_coins(v'multiplier);
+    build_0 = build_0.store_coins(v'jettoken_token_uint);
     return build_0;
 }
 
-(slice, ((int, int, slice, slice, cell, int))) $Token$_load(slice sc_0) inline {
+(slice, ((int, int, slice, slice, cell, int))) $Jetton_Root$_load(slice sc_0) inline {
     var v'total_supply = sc_0~load_coins();
     var v'mintable = sc_0~load_int(1);
     var v'admin = sc_0~__tact_load_address();
     var v'collection_address = sc_0~__tact_load_address();
     var v'content = sc_0~load_int(1) ? sc_0~load_ref() : null();
-    var v'multiplier = sc_0~load_coins();
-    return (sc_0, (v'total_supply, v'mintable, v'admin, v'collection_address, v'content, v'multiplier));
+    var v'jettoken_token_uint = sc_0~load_coins();
+    return (sc_0, (v'total_supply, v'mintable, v'admin, v'collection_address, v'content, v'jettoken_token_uint));
 }
 
-(slice, ((slice, slice))) $Token$init$_load(slice sc_0) inline {
+(slice, ((slice, slice))) $Jetton_Root$init$_load(slice sc_0) inline {
     var v'admin = sc_0~__tact_load_address();
     var v'collection_address = sc_0~__tact_load_address();
     return (sc_0, (v'admin, v'collection_address));
 }
 
-(int, int, slice, slice, cell, int) $Token$_contract_load() impure inline_ref {
+(int, int, slice, slice, cell, int) $Jetton_Root$_contract_load() impure inline_ref {
     slice $sc = get_data().begin_parse();
     __tact_context_sys = $sc~load_ref();
     int $loaded = $sc~load_int(1);
     if ($loaded) {
-        return $sc~$Token$_load();
+        return $sc~$Jetton_Root$_load();
     } else {
         ;; Allow only workchain deployments
         throw_unless(137, my_address().preload_uint(11) == 1024);
-        (slice admin, slice collection_address) = $sc~$Token$init$_load();
+        (slice admin, slice collection_address) = $sc~$Jetton_Root$init$_load();
         $sc.end_parse();
-        return $Token$_contract_init(admin, collection_address);
+        return $Jetton_Root$_contract_init(admin, collection_address);
     }
 }
 
-() $Token$_contract_store((int, int, slice, slice, cell, int) v) impure inline {
+() $Jetton_Root$_contract_store((int, int, slice, slice, cell, int) v) impure inline {
     builder b = begin_cell();
     b = b.store_ref(__tact_context_sys);
     b = b.store_int(true, 1);
-    b = $Token$_store(b, v);
+    b = $Jetton_Root$_store(b, v);
     set_data(b.end_cell());
 }
 

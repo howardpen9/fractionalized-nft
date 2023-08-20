@@ -1,9 +1,8 @@
 import * as fs from "fs";
 import * as path from "path";
+
 import { Address, contractAddress, beginCell } from "ton";
 import { NftCollection } from "./output/sample_NftCollection";
-// import { Token } from "./output/sample_Token";
-// import { NftItem } from "./output/sample_NftItem";
 
 import { prepareTactDeployment } from "@tact-lang/deployer";
 
@@ -15,10 +14,10 @@ let newContent = beginCell().storeInt(OFFCHAIN_CONTENT_PREFIX, 8).storeStringRef
     // Parameters
     let testnet = true;
     let packageName = "sample_NftCollection.pkg";
-    let owner = Address.parse("EQD1ptyvitBi3JbHaDQt_6j-15ABn9BqdABTFA1vgzs3Ae6z");
+    let owner = Address.parse("kQBXFiq2Oc88YmUSCmxXGyHDqeq4UYo3xCSJe2yAAsMja1-u"); // Change to your address
     let init = await NftCollection.init(owner, newContent, {
         $$type: "RoyaltyParams",
-        numerator: 350n, // 350n = 35%
+        numerator: 369n, // 350n = 35%
         denominator: 1000n,
         destination: owner,
     });

@@ -187,66 +187,6 @@ function dictValueParserSendParameters(): DictionaryValue<SendParameters> {
     }
 }
 
-export type MasterData = {
-    $$type: 'MasterData';
-    total_supply: bigint;
-    mintable: boolean;
-    admin: Address;
-    jetton_content: Cell | null;
-    jetton_wallet_code: Cell;
-}
-
-export function storeMasterData(src: MasterData) {
-    return (builder: Builder) => {
-        let b_0 = builder;
-        b_0.storeInt(src.total_supply, 257);
-        b_0.storeBit(src.mintable);
-        b_0.storeAddress(src.admin);
-        if (src.jetton_content !== null && src.jetton_content !== undefined) { b_0.storeBit(true).storeRef(src.jetton_content); } else { b_0.storeBit(false); }
-        b_0.storeRef(src.jetton_wallet_code);
-    };
-}
-
-export function loadMasterData(slice: Slice) {
-    let sc_0 = slice;
-    let _total_supply = sc_0.loadIntBig(257);
-    let _mintable = sc_0.loadBit();
-    let _admin = sc_0.loadAddress();
-    let _jetton_content = sc_0.loadBit() ? sc_0.loadRef() : null;
-    let _jetton_wallet_code = sc_0.loadRef();
-    return { $$type: 'MasterData' as const, total_supply: _total_supply, mintable: _mintable, admin: _admin, jetton_content: _jetton_content, jetton_wallet_code: _jetton_wallet_code };
-}
-
-function loadTupleMasterData(source: TupleReader) {
-    let _total_supply = source.readBigNumber();
-    let _mintable = source.readBoolean();
-    let _admin = source.readAddress();
-    let _jetton_content = source.readCellOpt();
-    let _jetton_wallet_code = source.readCell();
-    return { $$type: 'MasterData' as const, total_supply: _total_supply, mintable: _mintable, admin: _admin, jetton_content: _jetton_content, jetton_wallet_code: _jetton_wallet_code };
-}
-
-function storeTupleMasterData(source: MasterData) {
-    let builder = new TupleBuilder();
-    builder.writeNumber(source.total_supply);
-    builder.writeBoolean(source.mintable);
-    builder.writeAddress(source.admin);
-    builder.writeCell(source.jetton_content);
-    builder.writeCell(source.jetton_wallet_code);
-    return builder.build();
-}
-
-function dictValueParserMasterData(): DictionaryValue<MasterData> {
-    return {
-        serialize: (src, buidler) => {
-            buidler.storeRef(beginCell().store(storeMasterData(src)).endCell());
-        },
-        parse: (src) => {
-            return loadMasterData(src.loadRef().beginParse());
-        }
-    }
-}
-
 export type UploadContent = {
     $$type: 'UploadContent';
     content: Cell;
@@ -450,12 +390,72 @@ function dictValueParserTokenBurnNotification(): DictionaryValue<TokenBurnNotifi
     }
 }
 
+export type MasterData = {
+    $$type: 'MasterData';
+    total_supply: bigint;
+    mintable: boolean;
+    admin_address: Address;
+    jetton_content: Cell | null;
+    jetton_wallet_code: Cell;
+}
+
+export function storeMasterData(src: MasterData) {
+    return (builder: Builder) => {
+        let b_0 = builder;
+        b_0.storeInt(src.total_supply, 257);
+        b_0.storeBit(src.mintable);
+        b_0.storeAddress(src.admin_address);
+        if (src.jetton_content !== null && src.jetton_content !== undefined) { b_0.storeBit(true).storeRef(src.jetton_content); } else { b_0.storeBit(false); }
+        b_0.storeRef(src.jetton_wallet_code);
+    };
+}
+
+export function loadMasterData(slice: Slice) {
+    let sc_0 = slice;
+    let _total_supply = sc_0.loadIntBig(257);
+    let _mintable = sc_0.loadBit();
+    let _admin_address = sc_0.loadAddress();
+    let _jetton_content = sc_0.loadBit() ? sc_0.loadRef() : null;
+    let _jetton_wallet_code = sc_0.loadRef();
+    return { $$type: 'MasterData' as const, total_supply: _total_supply, mintable: _mintable, admin_address: _admin_address, jetton_content: _jetton_content, jetton_wallet_code: _jetton_wallet_code };
+}
+
+function loadTupleMasterData(source: TupleReader) {
+    let _total_supply = source.readBigNumber();
+    let _mintable = source.readBoolean();
+    let _admin_address = source.readAddress();
+    let _jetton_content = source.readCellOpt();
+    let _jetton_wallet_code = source.readCell();
+    return { $$type: 'MasterData' as const, total_supply: _total_supply, mintable: _mintable, admin_address: _admin_address, jetton_content: _jetton_content, jetton_wallet_code: _jetton_wallet_code };
+}
+
+function storeTupleMasterData(source: MasterData) {
+    let builder = new TupleBuilder();
+    builder.writeNumber(source.total_supply);
+    builder.writeBoolean(source.mintable);
+    builder.writeAddress(source.admin_address);
+    builder.writeCell(source.jetton_content);
+    builder.writeCell(source.jetton_wallet_code);
+    return builder.build();
+}
+
+function dictValueParserMasterData(): DictionaryValue<MasterData> {
+    return {
+        serialize: (src, buidler) => {
+            buidler.storeRef(beginCell().store(storeMasterData(src)).endCell());
+        },
+        parse: (src) => {
+            return loadMasterData(src.loadRef().beginParse());
+        }
+    }
+}
+
 export type TokenTransfer = {
     $$type: 'TokenTransfer';
     queryId: bigint;
     amount: bigint;
     destination: Address;
-    responseDestination: Address;
+    response_destination: Address;
     customPayload: Cell | null;
     forward_ton_amount: bigint;
     forward_payload: Cell;
@@ -468,7 +468,7 @@ export function storeTokenTransfer(src: TokenTransfer) {
         b_0.storeUint(src.queryId, 64);
         b_0.storeCoins(src.amount);
         b_0.storeAddress(src.destination);
-        b_0.storeAddress(src.responseDestination);
+        b_0.storeAddress(src.response_destination);
         if (src.customPayload !== null && src.customPayload !== undefined) { b_0.storeBit(true).storeRef(src.customPayload); } else { b_0.storeBit(false); }
         b_0.storeCoins(src.forward_ton_amount);
         b_0.storeBuilder(src.forward_payload.asBuilder());
@@ -481,22 +481,22 @@ export function loadTokenTransfer(slice: Slice) {
     let _queryId = sc_0.loadUintBig(64);
     let _amount = sc_0.loadCoins();
     let _destination = sc_0.loadAddress();
-    let _responseDestination = sc_0.loadAddress();
+    let _response_destination = sc_0.loadAddress();
     let _customPayload = sc_0.loadBit() ? sc_0.loadRef() : null;
     let _forward_ton_amount = sc_0.loadCoins();
     let _forward_payload = sc_0.asCell();
-    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, responseDestination: _responseDestination, customPayload: _customPayload, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, response_destination: _response_destination, customPayload: _customPayload, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
 }
 
 function loadTupleTokenTransfer(source: TupleReader) {
     let _queryId = source.readBigNumber();
     let _amount = source.readBigNumber();
     let _destination = source.readAddress();
-    let _responseDestination = source.readAddress();
+    let _response_destination = source.readAddress();
     let _customPayload = source.readCellOpt();
     let _forward_ton_amount = source.readBigNumber();
     let _forward_payload = source.readCell();
-    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, responseDestination: _responseDestination, customPayload: _customPayload, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+    return { $$type: 'TokenTransfer' as const, queryId: _queryId, amount: _amount, destination: _destination, response_destination: _response_destination, customPayload: _customPayload, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
 }
 
 function storeTupleTokenTransfer(source: TokenTransfer) {
@@ -504,7 +504,7 @@ function storeTupleTokenTransfer(source: TokenTransfer) {
     builder.writeNumber(source.queryId);
     builder.writeNumber(source.amount);
     builder.writeAddress(source.destination);
-    builder.writeAddress(source.responseDestination);
+    builder.writeAddress(source.response_destination);
     builder.writeCell(source.customPayload);
     builder.writeNumber(source.forward_ton_amount);
     builder.writeSlice(source.forward_payload);
@@ -527,7 +527,7 @@ export type TokenTransferInternal = {
     queryId: bigint;
     amount: bigint;
     from: Address;
-    responseAddress: Address;
+    response_destination: Address;
     forward_ton_amount: bigint;
     forward_payload: Cell;
 }
@@ -539,7 +539,7 @@ export function storeTokenTransferInternal(src: TokenTransferInternal) {
         b_0.storeUint(src.queryId, 64);
         b_0.storeCoins(src.amount);
         b_0.storeAddress(src.from);
-        b_0.storeAddress(src.responseAddress);
+        b_0.storeAddress(src.response_destination);
         b_0.storeCoins(src.forward_ton_amount);
         b_0.storeBuilder(src.forward_payload.asBuilder());
     };
@@ -551,20 +551,20 @@ export function loadTokenTransferInternal(slice: Slice) {
     let _queryId = sc_0.loadUintBig(64);
     let _amount = sc_0.loadCoins();
     let _from = sc_0.loadAddress();
-    let _responseAddress = sc_0.loadAddress();
+    let _response_destination = sc_0.loadAddress();
     let _forward_ton_amount = sc_0.loadCoins();
     let _forward_payload = sc_0.asCell();
-    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, responseAddress: _responseAddress, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, response_destination: _response_destination, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
 }
 
 function loadTupleTokenTransferInternal(source: TupleReader) {
     let _queryId = source.readBigNumber();
     let _amount = source.readBigNumber();
     let _from = source.readAddress();
-    let _responseAddress = source.readAddress();
+    let _response_destination = source.readAddress();
     let _forward_ton_amount = source.readBigNumber();
     let _forward_payload = source.readCell();
-    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, responseAddress: _responseAddress, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
+    return { $$type: 'TokenTransferInternal' as const, queryId: _queryId, amount: _amount, from: _from, response_destination: _response_destination, forward_ton_amount: _forward_ton_amount, forward_payload: _forward_payload };
 }
 
 function storeTupleTokenTransferInternal(source: TokenTransferInternal) {
@@ -572,7 +572,7 @@ function storeTupleTokenTransferInternal(source: TokenTransferInternal) {
     builder.writeNumber(source.queryId);
     builder.writeNumber(source.amount);
     builder.writeAddress(source.from);
-    builder.writeAddress(source.responseAddress);
+    builder.writeAddress(source.response_destination);
     builder.writeNumber(source.forward_ton_amount);
     builder.writeSlice(source.forward_payload);
     return builder.build();
@@ -651,7 +651,7 @@ export type TokenBurn = {
     queryId: bigint;
     amount: bigint;
     owner: Address;
-    responseAddress: Address;
+    response_destination: Address;
 }
 
 export function storeTokenBurn(src: TokenBurn) {
@@ -661,7 +661,7 @@ export function storeTokenBurn(src: TokenBurn) {
         b_0.storeUint(src.queryId, 64);
         b_0.storeCoins(src.amount);
         b_0.storeAddress(src.owner);
-        b_0.storeAddress(src.responseAddress);
+        b_0.storeAddress(src.response_destination);
     };
 }
 
@@ -671,16 +671,16 @@ export function loadTokenBurn(slice: Slice) {
     let _queryId = sc_0.loadUintBig(64);
     let _amount = sc_0.loadCoins();
     let _owner = sc_0.loadAddress();
-    let _responseAddress = sc_0.loadAddress();
-    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
+    let _response_destination = sc_0.loadAddress();
+    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, owner: _owner, response_destination: _response_destination };
 }
 
 function loadTupleTokenBurn(source: TupleReader) {
     let _queryId = source.readBigNumber();
     let _amount = source.readBigNumber();
     let _owner = source.readAddress();
-    let _responseAddress = source.readAddress();
-    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, owner: _owner, responseAddress: _responseAddress };
+    let _response_destination = source.readAddress();
+    return { $$type: 'TokenBurn' as const, queryId: _queryId, amount: _amount, owner: _owner, response_destination: _response_destination };
 }
 
 function storeTupleTokenBurn(source: TokenBurn) {
@@ -688,7 +688,7 @@ function storeTupleTokenBurn(source: TokenBurn) {
     builder.writeNumber(source.queryId);
     builder.writeNumber(source.amount);
     builder.writeAddress(source.owner);
-    builder.writeAddress(source.responseAddress);
+    builder.writeAddress(source.response_destination);
     return builder.build();
 }
 
@@ -787,57 +787,57 @@ function dictValueParserTokenUpdateContent(): DictionaryValue<TokenUpdateContent
     }
 }
 
-export type JettonWalletData = {
-    $$type: 'JettonWalletData';
+export type WalletData = {
+    $$type: 'WalletData';
     balance: bigint;
     owner: Address;
     master: Address;
-    walletCode: Cell;
+    code: Cell;
 }
 
-export function storeJettonWalletData(src: JettonWalletData) {
+export function storeWalletData(src: WalletData) {
     return (builder: Builder) => {
         let b_0 = builder;
         b_0.storeInt(src.balance, 257);
         b_0.storeAddress(src.owner);
         b_0.storeAddress(src.master);
-        b_0.storeRef(src.walletCode);
+        b_0.storeRef(src.code);
     };
 }
 
-export function loadJettonWalletData(slice: Slice) {
+export function loadWalletData(slice: Slice) {
     let sc_0 = slice;
     let _balance = sc_0.loadIntBig(257);
     let _owner = sc_0.loadAddress();
     let _master = sc_0.loadAddress();
-    let _walletCode = sc_0.loadRef();
-    return { $$type: 'JettonWalletData' as const, balance: _balance, owner: _owner, master: _master, walletCode: _walletCode };
+    let _code = sc_0.loadRef();
+    return { $$type: 'WalletData' as const, balance: _balance, owner: _owner, master: _master, code: _code };
 }
 
-function loadTupleJettonWalletData(source: TupleReader) {
+function loadTupleWalletData(source: TupleReader) {
     let _balance = source.readBigNumber();
     let _owner = source.readAddress();
     let _master = source.readAddress();
-    let _walletCode = source.readCell();
-    return { $$type: 'JettonWalletData' as const, balance: _balance, owner: _owner, master: _master, walletCode: _walletCode };
+    let _code = source.readCell();
+    return { $$type: 'WalletData' as const, balance: _balance, owner: _owner, master: _master, code: _code };
 }
 
-function storeTupleJettonWalletData(source: JettonWalletData) {
+function storeTupleWalletData(source: WalletData) {
     let builder = new TupleBuilder();
     builder.writeNumber(source.balance);
     builder.writeAddress(source.owner);
     builder.writeAddress(source.master);
-    builder.writeCell(source.walletCode);
+    builder.writeCell(source.code);
     return builder.build();
 }
 
-function dictValueParserJettonWalletData(): DictionaryValue<JettonWalletData> {
+function dictValueParserWalletData(): DictionaryValue<WalletData> {
     return {
         serialize: (src, buidler) => {
-            buidler.storeRef(beginCell().store(storeJettonWalletData(src)).endCell());
+            buidler.storeRef(beginCell().store(storeWalletData(src)).endCell());
         },
         parse: (src) => {
-            return loadJettonWalletData(src.loadRef().beginParse());
+            return loadWalletData(src.loadRef().beginParse());
         }
     }
 }
@@ -1506,8 +1506,8 @@ function initNftItem_init_args(src: NftItem_init_args) {
 }
 
 async function NftItem_init(collection_address: Address, item_index: bigint, owner: Address, individual_content: Cell) {
-    const __code = Cell.fromBase64('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');
-    const __system = Cell.fromBase64('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');
+    const __code = Cell.fromBase64('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');
+    const __system = Cell.fromBase64('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');
     let builder = beginCell();
     builder.storeRef(__system);
     builder.storeUint(0, 1);
@@ -1547,12 +1547,12 @@ const NftItem_errors: { [key: number]: { message: string } } = {
     16059: { message: `Invalid value` },
     17062: { message: `Invalid amount` },
     19671: { message: `locked` },
-    21994: { message: `Only admin can upload content` },
     22185: { message: `not from NFT Item` },
     26686: { message: `Only admin can mint tokens` },
     38283: { message: `not from Jetton Token` },
     49280: { message: `not owner` },
     49469: { message: `not from collection` },
+    50669: { message: `not enough ton` },
     53832: { message: `Only wallet can burn tokens` },
     62176: { message: `Invalid total supply after burn` },
     62742: { message: `non-sequential NFTs` },

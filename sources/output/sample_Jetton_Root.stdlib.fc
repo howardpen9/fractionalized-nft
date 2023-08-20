@@ -143,8 +143,8 @@ slice $global_contractAddress((cell, cell) $s) impure inline {
     send_raw_message($c, $params'mode);
 }
 
-((int, int, slice, slice, cell, int), ()) $Token$_fun_forward((int, int, slice, slice, cell, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref {
-    var (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'multiplier)) = $self;
+((int, int, slice, slice, cell, int), ()) $Jetton_Root$_fun_forward((int, int, slice, slice, cell, int) $self, slice $to, cell $body, int $bounce, tuple $init) impure inline_ref {
+    var (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint)) = $self;
     var ($init) = $init;
     cell $code = null();
     cell $data = null();
@@ -160,9 +160,9 @@ slice $global_contractAddress((cell, cell) $s) impure inline {
         if (($balanceBeforeMessage < 0)) {
             raw_reserve(0, 0);
             $global_send($SendParameters$_constructor_bounce_to_value_mode_body_code_data($bounce, $to, 0, (128 + 2), $body, $code, $data));
-            return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'multiplier), ());
+            return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint), ());
         }
     }
     $global_send($SendParameters$_constructor_bounce_to_value_mode_body_code_data($bounce, $to, 0, (64 + 2), $body, $code, $data));
-    return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'multiplier), ());
+    return (($self'total_supply, $self'mintable, $self'admin, $self'collection_address, $self'content, $self'jettoken_token_uint), ());
 }

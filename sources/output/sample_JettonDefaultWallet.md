@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: JettonDefaultWallet
-BOC Size: 2288 bytes
+BOC Size: 2043 bytes
 
 # Types
 Total Types: 28
@@ -16,10 +16,6 @@ Signature: `Context{bounced:bool,sender:address,value:int257,raw:^slice}`
 ## SendParameters
 TLB: `_ bounce:bool to:address value:int257 mode:int257 body:Maybe ^cell code:Maybe ^cell data:Maybe ^cell = SendParameters`
 Signature: `SendParameters{bounce:bool,to:address,value:int257,mode:int257,body:Maybe ^cell,code:Maybe ^cell,data:Maybe ^cell}`
-
-## MasterData
-TLB: `_ total_supply:int257 mintable:bool admin:address jetton_content:Maybe ^cell jetton_wallet_code:^cell = MasterData`
-Signature: `MasterData{total_supply:int257,mintable:bool,admin:address,jetton_content:Maybe ^cell,jetton_wallet_code:^cell}`
 
 ## UploadContent
 TLB: `upload_content#58dee2a2 content:^cell = UploadContent`
@@ -37,21 +33,25 @@ Signature: `SafeTokenBurn{queryId:uint64,amount:coins,owner:address,responseAddr
 TLB: `token_burn_notification#7bdd97de queryId:uint64 amount:coins owner:address responseAddress:Maybe address = TokenBurnNotification`
 Signature: `TokenBurnNotification{queryId:uint64,amount:coins,owner:address,responseAddress:Maybe address}`
 
+## MasterData
+TLB: `_ total_supply:int257 mintable:bool admin_address:address jetton_content:Maybe ^cell jetton_wallet_code:^cell = MasterData`
+Signature: `MasterData{total_supply:int257,mintable:bool,admin_address:address,jetton_content:Maybe ^cell,jetton_wallet_code:^cell}`
+
 ## TokenTransfer
-TLB: `token_transfer#0f8a7ea5 queryId:uint64 amount:coins destination:address responseDestination:address customPayload:Maybe ^cell forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransfer`
-Signature: `TokenTransfer{queryId:uint64,amount:coins,destination:address,responseDestination:address,customPayload:Maybe ^cell,forward_ton_amount:coins,forward_payload:remainder<slice>}`
+TLB: `token_transfer#0f8a7ea5 queryId:uint64 amount:coins destination:address response_destination:address customPayload:Maybe ^cell forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransfer`
+Signature: `TokenTransfer{queryId:uint64,amount:coins,destination:address,response_destination:address,customPayload:Maybe ^cell,forward_ton_amount:coins,forward_payload:remainder<slice>}`
 
 ## TokenTransferInternal
-TLB: `token_transfer_internal#178d4519 queryId:uint64 amount:coins from:address responseAddress:address forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransferInternal`
-Signature: `TokenTransferInternal{queryId:uint64,amount:coins,from:address,responseAddress:address,forward_ton_amount:coins,forward_payload:remainder<slice>}`
+TLB: `token_transfer_internal#178d4519 queryId:uint64 amount:coins from:address response_destination:address forward_ton_amount:coins forward_payload:remainder<slice> = TokenTransferInternal`
+Signature: `TokenTransferInternal{queryId:uint64,amount:coins,from:address,response_destination:address,forward_ton_amount:coins,forward_payload:remainder<slice>}`
 
 ## TokenNotification
 TLB: `token_notification#7362d09c queryId:uint64 amount:coins from:address forward_payload:remainder<slice> = TokenNotification`
 Signature: `TokenNotification{queryId:uint64,amount:coins,from:address,forward_payload:remainder<slice>}`
 
 ## TokenBurn
-TLB: `token_burn#595f07bc queryId:uint64 amount:coins owner:address responseAddress:address = TokenBurn`
-Signature: `TokenBurn{queryId:uint64,amount:coins,owner:address,responseAddress:address}`
+TLB: `token_burn#595f07bc queryId:uint64 amount:coins owner:address response_destination:address = TokenBurn`
+Signature: `TokenBurn{queryId:uint64,amount:coins,owner:address,response_destination:address}`
 
 ## TokenExcesses
 TLB: `token_excesses#d53276db queryId:uint64 = TokenExcesses`
@@ -61,9 +61,9 @@ Signature: `TokenExcesses{queryId:uint64}`
 TLB: `token_update_content#0c087a9e content:Maybe ^cell = TokenUpdateContent`
 Signature: `TokenUpdateContent{content:Maybe ^cell}`
 
-## JettonWalletData
-TLB: `_ balance:int257 owner:address master:address walletCode:^cell = JettonWalletData`
-Signature: `JettonWalletData{balance:int257,owner:address,master:address,walletCode:^cell}`
+## WalletData
+TLB: `_ balance:int257 owner:address master:address code:^cell = WalletData`
+Signature: `WalletData{balance:int257,owner:address,master:address,code:^cell}`
 
 ## Fractionalize
 TLB: `fractionalize#f26348d9 item_index:uint32 original_applicant:address = Fractionalize`
@@ -156,12 +156,12 @@ Argument: value
 16059: Invalid value
 17062: Invalid amount
 19671: locked
-21994: Only admin can upload content
 22185: not from NFT Item
 26686: Only admin can mint tokens
 38283: not from Jetton Token
 49280: not owner
 49469: not from collection
+50669: not enough ton
 53832: Only wallet can burn tokens
 62176: Invalid total supply after burn
 62742: non-sequential NFTs
